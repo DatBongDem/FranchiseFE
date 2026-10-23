@@ -26,7 +26,7 @@ npm run preview
 | ----------------- | ---------------------------------------------------------------------------------------------- |
 | ADMIN             | Dashboard, xem/tạo sản phẩm, xem đơn, xem/tạo nguyên liệu, danh sách tài khoản và khóa/mở khóa |
 | MANAGER           | Dashboard cửa hàng, sản phẩm, đơn của cửa hàng được gán, danh sách tài khoản                   |
-| STORESTAFF        | Dashboard cửa hàng, sản phẩm, tra cứu đơn của cửa hàng được gán                                |
+| STORESTAFF        | Dashboard cửa hàng, sản phẩm, tạo đơn nhập, tạo/xem/in hóa đơn bán hàng                        |
 | KITCHENSTAFF      | Dashboard bếp, hàng đợi nấu, bắt đầu/hoàn tất nấu, tra cứu nguyên liệu                         |
 | SUPPLYCOORDINATOR | Dashboard cung ứng, nhận đơn, chuyển bếp, nhận từ bếp, xác nhận đến cửa hàng                   |
 
@@ -40,7 +40,7 @@ npm run preview
 
 Frontend kiểm tra session qua `/users/me`, lưu token trong `sessionStorage` và xóa khi đăng xuất/401. Route/menu chỉ hỗ trợ trải nghiệm; quyền dữ liệu và thao tác vẫn cần backend xác thực. Một số API công khai hiện tại của backend chưa có role guard; việc ẩn nút trong FE không thay thế bảo vệ backend. Lọc cửa hàng ở UI cũng không thay thế phân quyền dữ liệu tại API.
 
-Chưa triển khai POS/tạo hóa đơn, sửa/xóa sản phẩm, công thức, báo cáo doanh thu/hao hụt. Không sửa backend hoặc FranchiseStore trong lần dựng FE này.
+Chưa triển khai sửa/xóa sản phẩm, công thức, báo cáo doanh thu/hao hụt. Không sửa backend hoặc FranchiseStore trong lần dựng FE này.
 
 ## Tạo đơn hàng (STORESTAFF)
 
@@ -51,6 +51,16 @@ API dùng: `GET /order/check-creating`, `GET /order/:id/details`, `POST /product
 Các món được lưu ngay sau thao tác thêm/lưu số lượng/xóa; ghi chú và loại đơn lưu khi bấm Lưu nháp hoặc Gửi. Các đơn nháp dùng chung theo cửa hàng. FE kiểm tra ID/trạng thái trước thao tác, khóa nút khi đang gửi và tải lại dữ liệu sau mutation. Backend hiện không cung cấp transaction/version cho toàn bộ luồng; kiểm tra tại FE không bảo đảm loại bỏ hoàn toàn xung đột giữa nhiều người thao tác đồng thời.
 
 Kiểm thử tự động mock HTTP bao phủ DTO, số lượng, quyền route, đơn rỗng, nháp thay đổi, lưu ghi chú thất bại và phản hồi gửi đơn bị mất; chưa thay thế kiểm thử với database thật.
+
+## Tạo hóa đơn bán hàng (STORESTAFF)
+
+Vào **Bán hàng / Hóa đơn** (`/bills`) hoặc nút bán hàng trên dashboard. Tìm tên, lọc danh mục/còn hàng, phân trang sản phẩm; thêm món, nhập số lượng, xóa món, ghi chú rồi xác nhận tạo hóa đơn. Giá tạm tính dùng `SellingPrice || Price || 0` giống backend; API quyết định giá trị chính thức và trừ kho theo các lô còn hạn thuộc đơn Completed của cửa hàng.
+
+API: `GET /product`, `GET /productbatches/:storeId/inventory`, `POST /bills` với `{items: [{productId, quantity}], note}`, `GET /bills/:id/print`, `GET /bills/history?pageNumber=&pageSize=`. FE không gửi đơn giá/tổng tiền/cửa hàng hoặc nhân viên trong payload tạo hóa đơn; backend lấy thông tin từ token. Lịch sử cá nhân phân trang phía server. Bản in dùng tổng tiền và các dòng thực tế từ backend, giữ các dòng tách theo lô FIFO.
+
+Nút tạo bị khóa trong lúc gửi. Trạng thái gửi/mã hóa đơn được lưu trong `sessionStorage` theo tài khoản và cửa hàng. Lỗi tồn kho 422 giữ giỏ để sửa. Mất phản hồi POST/HTTP 5xx/kết quả thiếu BillId được coi là chưa xác định: không tự retry, yêu cầu đối chiếu lịch sử trước khi bắt đầu giao dịch mới. Lỗi tải bản in chỉ tải lại bản in. Cơ chế FE này không thay thế idempotency phía backend và không đồng bộ giữa các tab; giỏ chưa gửi không lưu khi đổi trang.
+
+Kiểm thử mock HTTP bao phủ quyền, kho, validation số lượng, payload, phản hồi PascalCase, lỗi tạo/in, phân trang và trạng thái phục hồi. Chưa kiểm thử với SQL Server thật hoặc máy in thực tế. Không bổ sung API thanh toán, giảm giá hay VAT vì backend hiện chưa cung cấp.
 
 ## Git workflow
 

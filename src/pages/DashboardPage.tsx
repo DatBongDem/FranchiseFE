@@ -46,8 +46,8 @@ const content: Record<
     description:
       "Tra cứu sản phẩm và cập nhật hành trình đơn hàng của cửa hàng.",
     focus: "Từng trải nghiệm nhỏ, tạo nên khác biệt lớn.",
-    route: "/products",
-    cta: "Khám phá sản phẩm",
+    route: "/bills",
+    cta: "Bán hàng / Tạo hóa đơn",
   },
   KITCHENSTAFF: {
     title: "Nhịp bếp hôm nay",

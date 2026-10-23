@@ -6,6 +6,7 @@ import {
   Leaf,
   LogOut,
   Package,
+  ReceiptText,
   ShoppingBag,
   Truck,
   Users,
@@ -37,6 +38,12 @@ export const navigation = [
     label: "Đơn hàng",
     icon: Package,
     roles: ["ADMIN", "MANAGER", "STORESTAFF"],
+  },
+  {
+    path: "/bills",
+    label: "Bán hàng / Hóa đơn",
+    icon: ReceiptText,
+    roles: ["STORESTAFF"],
   },
   {
     path: "/kitchen",
