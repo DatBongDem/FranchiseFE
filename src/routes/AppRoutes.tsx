@@ -17,6 +17,7 @@ import RevenuePage from "../pages/RevenuePage";
 import ShrinkagePage from "../pages/ShrinkagePage";
 import StoreBillHistoryPage from "../pages/StoreBillHistoryPage";
 import RecipesPage from "../pages/RecipesPage";
+import StoreInventoryPage from "../pages/StoreInventoryPage";
 import IngredientHistoryPage from "../pages/IngredientHistoryPage";
 import StoreOrderHistoryPage from "../pages/StoreOrderHistoryPage";
 function Layout() {
@@ -59,6 +60,7 @@ export default function AppRoutes() {
         <Route path="/shrinkage" element={<ShrinkagePage />} />
         <Route path="/store-bills" element={<StoreBillHistoryPage />} />
         <Route path="/recipes" element={<RecipesPage />} />
+        <Route path="/store-inventory" element={<StoreInventoryPage />} />
         <Route path="/ingredient-history" element={<IngredientHistoryPage />} />
         <Route path="/store-orders" element={<StoreOrderHistoryPage />} />
         <Route path="/kitchen" element={<OrdersPage />} />
