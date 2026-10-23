@@ -2,6 +2,7 @@ import { useRef, useState, type FormEvent } from "react";
 import { BookOpen, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import DeleteRecipeModal from "../components/DeleteRecipeModal";
+import CreateRecipeModal from "../components/CreateRecipeModal";
 import { useResource } from "../hooks/useResource";
 import {
   recipeService,
@@ -256,6 +257,7 @@ export default function RecipesPage() {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(6);
   const [editing, setEditing] = useState<Recipe>();
+  const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<Recipe>();
   const [notice, setNotice] = useState("");
   const name = (r: Recipe) =>
@@ -281,6 +283,16 @@ export default function RecipesPage() {
         title="Chuẩn vị từng món ăn"
         description="Tra cứu và cập nhật định lượng nguyên liệu cho công thức sản phẩm."
       >
+        <button
+          className="button primary"
+          disabled={resource.loading || !!resource.error || !resource.data}
+          onClick={() => {
+            setNotice("");
+            setCreating(true);
+          }}
+        >
+          <Plus size={16} /> Tạo công thức
+        </button>
         <button
           className="button secondary"
           disabled={resource.loading}
@@ -396,6 +408,23 @@ export default function RecipesPage() {
           onSaved={() => {
             setEditing(undefined);
             setNotice("Đã cập nhật và kiểm tra lại công thức thành công.");
+            void resource.reload();
+          }}
+        />
+      )}
+      {creating && resource.data && (
+        <CreateRecipeModal
+          role={user!.role}
+          products={resource.data.products}
+          ingredients={resource.data.ingredients}
+          recipes={resource.data.recipes}
+          onClose={() => {
+            setCreating(false);
+            void resource.reload();
+          }}
+          onCreated={() => {
+            setCreating(false);
+            setNotice("Đã tạo và kiểm tra lại công thức thành công.");
             void resource.reload();
           }}
         />

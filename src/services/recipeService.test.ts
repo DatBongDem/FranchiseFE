@@ -23,6 +23,132 @@ const next = {
   ingredients: [{ ingredientID: ingredient, quantity: 1.25 }],
 };
 const fetchMock = vi.fn();
+it("creates with full ingredient payload and verifies stored details", async () => {
+  reply([]);
+  reply(
+    {
+      productId: product,
+      description: next.description,
+      ingredients: next.ingredients,
+    },
+    201,
+  );
+  reply([{ recipeID: id, productID: product, description: next.description }]);
+  reply(next);
+  expect(
+    (
+      await recipeService.create(
+        "ADMIN",
+        product,
+        next.description,
+        next.ingredients,
+        catalog,
+      )
+    ).recipeID,
+  ).toBe(id);
+  expect(fetchMock.mock.calls[1][0]).toBe("/api/recipe");
+  expect(fetchMock.mock.calls[1][1]).toMatchObject({
+    method: "POST",
+    body: JSON.stringify({
+      productId: product,
+      description: next.description,
+      ingredients: next.ingredients,
+    }),
+  });
+});
+it("blocks creating a duplicate product recipe case insensitively", async () => {
+  reply([
+    { recipeID: id, productID: product.toUpperCase(), description: "Existing" },
+  ]);
+  await expect(
+    recipeService.create(
+      "KITCHENSTAFF",
+      product,
+      "",
+      next.ingredients,
+      catalog,
+    ),
+  ).rejects.toThrow("đã có công thức");
+  expect(fetchMock).toHaveBeenCalledTimes(1);
+});
+it("requires at least one ingredient before any request", async () => {
+  await expect(
+    recipeService.create("ADMIN", product, "", [], catalog),
+  ).rejects.toThrow("ít nhất");
+  expect(fetchMock).not.toHaveBeenCalled();
+});
+it("requires valid product ID before any request", async () => {
+  await expect(
+    recipeService.create("ADMIN", "bad", "", next.ingredients, catalog),
+  ).rejects.toThrow("sản phẩm hợp lệ");
+  expect(fetchMock).not.toHaveBeenCalled();
+});
+it("rejects duplicate creation ingredients before any request", async () => {
+  await expect(
+    recipeService.create(
+      "ADMIN",
+      product,
+      "",
+      [...next.ingredients, ...next.ingredients],
+      catalog,
+    ),
+  ).rejects.toThrow("trùng");
+  expect(fetchMock).not.toHaveBeenCalled();
+});
+it("rejects unknown creation ingredient before any request", async () => {
+  await expect(
+    recipeService.create("ADMIN", product, "", next.ingredients, []),
+  ).rejects.toThrow("danh mục");
+  expect(fetchMock).not.toHaveBeenCalled();
+});
+it.each(["MANAGER", "STORESTAFF", "SUPPLYCOORDINATOR"] as const)(
+  "blocks creation by %s",
+  async (role) => {
+    await expect(
+      recipeService.create(role, product, "", next.ingredients, catalog),
+    ).rejects.toThrow("không có quyền");
+    expect(fetchMock).not.toHaveBeenCalled();
+  },
+);
+it("does not replay POST after network loss", async () => {
+  reply([]);
+  fetchMock.mockRejectedValueOnce(new Error("offline"));
+  await expect(
+    recipeService.create("ADMIN", product, "", next.ingredients, catalog),
+  ).rejects.toThrow("Chưa xác nhận");
+  expect(fetchMock).toHaveBeenCalledTimes(2);
+});
+it("warns about partial creation after server failure", async () => {
+  reply([]);
+  reply({ message: "insert failed" }, 500);
+  await expect(
+    recipeService.create("ADMIN", product, "", next.ingredients, catalog),
+  ).rejects.toThrow("một phần");
+  expect(fetchMock).toHaveBeenCalledTimes(2);
+});
+it("does not claim creation if readback ingredients differ", async () => {
+  reply([]);
+  reply({}, 201);
+  reply([{ recipeID: id, productID: product, description: next.description }]);
+  reply({ ...next, ingredients: [] });
+  await expect(
+    recipeService.create(
+      "ADMIN",
+      product,
+      next.description,
+      next.ingredients,
+      catalog,
+    ),
+  ).rejects.toThrow("Chưa xác nhận");
+});
+it("does not claim creation if new recipe cannot be found", async () => {
+  reply([]);
+  reply({}, 201);
+  reply([]);
+  await expect(
+    recipeService.create("ADMIN", product, "", next.ingredients, catalog),
+  ).rejects.toThrow("Chưa xác nhận");
+});
 it("deletes once and verifies absence from the list", async () => {
   reply(original);
   reply("Recipe deleted successfully");

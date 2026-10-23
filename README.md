@@ -121,3 +121,46 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - ADMIN/KITCHENSTAFF chọn Xóa tại trang Công thức, xem mô tả/số dòng nguyên liệu và đánh dấu xác nhận.
 - Đọc chi tiết mới nhất trước `DELETE /recipe/{id}` để phát hiện thay đổi từ phiên khác. Kiểm tra công thức đã biến mất khỏi danh sách trước khi báo thành công.
 - Khóa bấm lặp; không tự gửi lại DELETE khi lỗi mạng/server. Nếu chưa xác nhận kết quả, đóng và tải lại để kiểm tra. Không thay đổi backend hoặc FranchiseStore.
+
+## Xác nhận nhận hàng / hoàn thành đơn
+
+- STORESTAFF chọn Xác nhận nhận hàng trên đơn Arrived thuộc cửa hàng được phân công. Hộp thoại tải chi tiết sản phẩm, số lượng đặt và tổng giá trị để đối chiếu hàng thực nhận.
+- Đánh dấu đã kiểm tra, nhập phản hồi tùy chọn, gọi `PUT /order/{id}/complete` với `{ feedback }`.
+- Đọc lại chi tiết trước khi gửi và kiểm tra trạng thái Completed sau khi gửi; chống bấm lặp, không tự gửi lại nếu mất kết nối. Nếu chưa xác nhận kết quả, đóng và tải lại danh sách.
+- Phạm vi cửa hàng được kiểm tra ở FE; backend hiện kiểm tra role và trạng thái, chưa kiểm tra quyền sở hữu cửa hàng tại endpoint complete. Chức năng này không thay đổi backend.
+- Kiểm thử API mô phỏng, chưa xác nhận luồng nhận hàng với database thực.
+
+## Lịch sử đơn hàng theo cửa hàng
+
+- MANAGER mở `/store-orders`, gọi `GET /order/order-history/{storeId}` với cửa hàng được phân công. Quyền MANAGER theo kiểm tra thực tế trong service backend.
+- Lọc ngày gửi đơn theo UTC+7, phân trang server 6/12/24. Không chọn ngày sẽ bao gồm đơn chưa gửi nếu API trả về; createdTime của DTO là SentTime, không phải ngày tạo đơn.
+- Xem trạng thái, mã người gửi, sản phẩm theo lô, số lượng đặt và đơn giá; tổng tiền hiển thị theo trang, không phải tổng toàn cửa hàng. Tìm mã/tên sản phẩm trong trang hiện tại, hỗ trợ không dấu.
+- API mô phỏng được kiểm thử; chưa xác nhận dữ liệu lịch sử thực hoặc dữ liệu chuyển từ C# có quy ước múi giờ khác. Không thay đổi backend/FranchiseStore.
+
+## Tạo công thức
+
+- ADMIN/KITCHENSTAFF chọn Tạo công thức, chọn sản phẩm chưa có công thức, nhập hướng dẫn và ít nhất một nguyên liệu. Định lượng dương tối đa hai chữ số thập phân, không trùng nguyên liệu.
+- Kiểm tra lại danh sách trước `POST /recipe`; đọc lại danh sách và chi tiết sau khi tạo để xác minh vì phản hồi POST không chứa recipeID mới.
+- Chống bấm lặp, không tự gửi lại khi lỗi mạng/server. Nếu tạo dở, đóng form, tải lại và dùng cập nhật công thức để kiểm tra/bổ sung.
+- Kiểm thử bằng API mô phỏng; chưa kiểm tra database thực. Không chỉnh sửa hoặc push FranchiseStore.
+
+## Lịch sử nguyên liệu
+
+- KITCHENSTAFF mở `/ingredient-history`, gọi `GET /ingredient/ingredient-history?pageNumber=...&pageSize=...` với phân trang server 6/12/24.
+- Hiển thị tên, mã nguyên liệu, lượng đã dùng và đơn vị; giữ riêng các dòng lặp theo dữ liệu API. Tìm tên không dấu và lọc đơn vị trong trang hiện tại.
+- API sắp mới nhất trước nhưng chưa trả CreatedTime, mã đơn/lô hoặc ID lịch sử; chưa có lọc ngày. Không cộng số lượng của nguyên liệu/đơn vị khác nhau.
+- Có loading, lỗi/thử lại, danh sách trống và quay về trang đầu. Kiểm thử API mô phỏng; chưa kiểm tra database thực. Không sửa backend hoặc FranchiseStore.
+
+## Nguyên liệu theo đơn nấu
+
+- KITCHENSTAFF vào Bếp trung tâm → Xem nguyên liệu tại từng đơn. Gọi `GET /ingredient/{orderId}/ingredients`.
+- Hiển thị nguyên liệu đã sử dụng trong lịch sử chế biến, không phải dự toán trước khi nấu. Có tìm tên không dấu, phân trang cục bộ 6/12/24 và tải lại.
+- Giữ riêng các dòng lịch sử, không cộng các đơn vị khác nhau. Phân biệt đơn chưa có lịch sử, đơn không tồn tại và lỗi API.
+- Kiểm thử API mô phỏng, chưa kiểm tra database thực. Không sửa backend hay FranchiseStore.
+
+## Tồn kho cửa hàng
+
+- MANAGER/STORESTAFF mở `/store-inventory`, gọi `GET /productbatches/{idStore}/inventory` theo cửa hàng được phân công.
+- Tên/mã sản phẩm, lượng còn lại, đơn vị; tìm không dấu, lọc còn hàng/không còn lượng khả dụng, đơn vị, sắp xếp, phân trang cục bộ 6/12/24 và tải lại.
+- API chỉ tính lô từ đơn Completed, chưa hết hạn hoặc không có hạn dùng. Không bổ sung giả các sản phẩm không được API trả về, không cộng lẫn đơn vị, không tính giá trị tồn kho. Chưa có ngày hết hạn từng lô để lọc ngày.
+- Giới hạn role/cửa hàng được thực hiện ở FE; endpoint backend hiện chỉ yêu cầu đăng nhập. Không thay đổi backend/FranchiseStore. Kiểm thử API mô phỏng, chưa kiểm tra database thực.

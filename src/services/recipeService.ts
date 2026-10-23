@@ -53,6 +53,63 @@ export function validateRecipe(r: RecipeDetails, ingredients: Ingredient[]) {
   }
 }
 export const recipeService = {
+  async create(
+    role: Role,
+    productID: string,
+    description: string,
+    lines: RecipeDetails["ingredients"],
+    catalog: Ingredient[],
+  ) {
+    assertRole(role);
+    if (!guid.test(productID))
+      throw new Error("Vui lòng chọn sản phẩm hợp lệ.");
+    if (!lines.length)
+      throw new Error("Công thức phải có ít nhất một nguyên liệu.");
+    validateRecipe(
+      { recipeID: productID, description, ingredients: lines },
+      catalog,
+    );
+    const existing = await this.list(role);
+    if (
+      existing.some(
+        (r) => r.productID.toLowerCase() === productID.toLowerCase(),
+      )
+    )
+      throw new Error(
+        "Sản phẩm đã có công thức. Đóng và tải lại để cập nhật công thức hiện có.",
+      );
+    try {
+      // POST returns the submitted DTO, not the newly generated recipe ID.
+      await api("/recipe", {
+        method: "POST",
+        body: JSON.stringify({
+          productId: productID,
+          description,
+          ingredients: lines,
+        }),
+      });
+      const created = (await this.list(role)).filter(
+        (r) => r.productID.toLowerCase() === productID.toLowerCase(),
+      );
+      if (created.length !== 1)
+        throw new Error("Không xác định được công thức mới.");
+      const saved = await this.details(role, created[0].recipeID);
+      if (
+        recipeFingerprint(saved) !==
+        recipeFingerprint({
+          recipeID: saved.recipeID,
+          description,
+          ingredients: lines,
+        })
+      )
+        throw new Error("Dữ liệu lưu không khớp.");
+      return created[0];
+    } catch {
+      throw new Error(
+        "Chưa xác nhận được kết quả tạo. Công thức có thể đã được lưu một phần. Đóng và tải lại danh sách để kiểm tra; không tự gửi lại.",
+      );
+    }
+  },
   async remove(role: Role, original: RecipeDetails) {
     assertRole(role);
     const latest = await this.details(role, original.recipeID);

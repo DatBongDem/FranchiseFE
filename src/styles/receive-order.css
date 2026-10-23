@@ -1,0 +1,43 @@
+.receive-order {
+  padding: 12px 20px 20px;
+}
+.receive-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #edf7ee;
+  border-radius: 12px;
+}
+.receive-summary strong {
+  color: #236344;
+  font-size: 20px;
+}
+.receive-feedback {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+.receive-feedback textarea {
+  width: 100%;
+  resize: vertical;
+  font: inherit;
+}
+.receive-check {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 16px;
+  background: #fff3e7;
+  border-radius: 10px;
+  margin-top: 16px;
+}
+.receive-check input {
+  width: auto;
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .receive-order {
+    padding: 8px;
+  }
+}

@@ -9,6 +9,7 @@ import {
   ReceiptText,
   BarChart3,
   BookOpen,
+  History,
   PackageX,
   ShoppingBag,
   Truck,
@@ -18,6 +19,18 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { roleLabels, type Role } from "../types/user";
 export const navigation = [
+  {
+    path: "/store-inventory",
+    label: "Tồn kho cửa hàng",
+    icon: Package,
+    roles: ["MANAGER", "STORESTAFF"],
+  },
+  {
+    path: "/ingredient-history",
+    label: "Lịch sử nguyên liệu",
+    icon: History,
+    roles: ["KITCHENSTAFF"],
+  },
   {
     path: "/recipes",
     label: "Công thức",
@@ -64,6 +77,12 @@ export const navigation = [
     path: "/store-bills",
     label: "Lịch sử hóa đơn",
     icon: ReceiptText,
+    roles: ["MANAGER"],
+  },
+  {
+    path: "/store-orders",
+    label: "Lịch sử đơn hàng",
+    icon: Package,
     roles: ["MANAGER"],
   },
   {
