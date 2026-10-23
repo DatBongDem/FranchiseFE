@@ -99,3 +99,11 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Tìm mã hóa đơn hoặc tên sản phẩm có/không dấu trong trang hiện tại; không tìm trên các trang chưa tải.
 - Xem chi tiết trực tiếp từ API lịch sử, giữ các dòng theo lô hàng. Tổng tiền trang được phân biệt với tổng số hóa đơn trong khoảng ngày.
 - Có trạng thái đang tải, lỗi/thử lại và không có dữ liệu. Kiểm thử dùng API mô phỏng; chưa xác nhận database thực.
+
+## Hủy đơn hàng
+
+- Nút Hủy đơn trong danh sách đơn hàng/bếp/điều phối gọi `PUT /order/{id}/cancel` với `cancellationReason` tùy chọn.
+- Xác nhận mã đơn, trạng thái, giá trị và lý do trước khi hủy. Chặn đơn Completed/Canceled; MANAGER/STORESTAFF chỉ thao tác cửa hàng được phân công.
+- Kiểm tra lại danh sách trước khi gửi. Khóa gửi trùng trong hộp thoại; nếu phản hồi lỗi hoặc không hợp lệ, đọc lại trạng thái, không tự gửi lại PUT.
+- API có thể lưu hủy rồi trả lỗi (ví dụ đơn nháp thiếu UserId). Nếu chưa xác nhận được kết quả, yêu cầu đóng và tải lại trước khi tiếp tục. Hủy đơn nháp không tự tạo nháp thay thế.
+- Quyền của endpoint hiện là mọi tài khoản đã đăng nhập; FE không thay thế kiểm tra quyền ở backend. Không thay đổi backend trong chức năng này.
