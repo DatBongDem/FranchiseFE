@@ -121,3 +121,11 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - ADMIN/KITCHENSTAFF chọn Xóa tại trang Công thức, xem mô tả/số dòng nguyên liệu và đánh dấu xác nhận.
 - Đọc chi tiết mới nhất trước `DELETE /recipe/{id}` để phát hiện thay đổi từ phiên khác. Kiểm tra công thức đã biến mất khỏi danh sách trước khi báo thành công.
 - Khóa bấm lặp; không tự gửi lại DELETE khi lỗi mạng/server. Nếu chưa xác nhận kết quả, đóng và tải lại để kiểm tra. Không thay đổi backend hoặc FranchiseStore.
+
+## Xác nhận nhận hàng / hoàn thành đơn
+
+- STORESTAFF chọn Xác nhận nhận hàng trên đơn Arrived thuộc cửa hàng được phân công. Hộp thoại tải chi tiết sản phẩm, số lượng đặt và tổng giá trị để đối chiếu hàng thực nhận.
+- Đánh dấu đã kiểm tra, nhập phản hồi tùy chọn, gọi `PUT /order/{id}/complete` với `{ feedback }`.
+- Đọc lại chi tiết trước khi gửi và kiểm tra trạng thái Completed sau khi gửi; chống bấm lặp, không tự gửi lại nếu mất kết nối. Nếu chưa xác nhận kết quả, đóng và tải lại danh sách.
+- Phạm vi cửa hàng được kiểm tra ở FE; backend hiện kiểm tra role và trạng thái, chưa kiểm tra quyền sở hữu cửa hàng tại endpoint complete. Chức năng này không thay đổi backend.
+- Kiểm thử API mô phỏng, chưa xác nhận luồng nhận hàng với database thực.
