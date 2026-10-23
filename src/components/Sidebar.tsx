@@ -8,6 +8,7 @@ import {
   Package,
   ReceiptText,
   BarChart3,
+  BookOpen,
   PackageX,
   ShoppingBag,
   Truck,
@@ -17,6 +18,12 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { roleLabels, type Role } from "../types/user";
 export const navigation = [
+  {
+    path: "/recipes",
+    label: "Công thức",
+    icon: BookOpen,
+    roles: ["ADMIN", "KITCHENSTAFF"],
+  },
   {
     path: "/dashboard",
     label: "Tổng quan",

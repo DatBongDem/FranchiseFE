@@ -107,3 +107,11 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Kiểm tra lại danh sách trước khi gửi. Khóa gửi trùng trong hộp thoại; nếu phản hồi lỗi hoặc không hợp lệ, đọc lại trạng thái, không tự gửi lại PUT.
 - API có thể lưu hủy rồi trả lỗi (ví dụ đơn nháp thiếu UserId). Nếu chưa xác nhận được kết quả, yêu cầu đóng và tải lại trước khi tiếp tục. Hủy đơn nháp không tự tạo nháp thay thế.
 - Quyền của endpoint hiện là mọi tài khoản đã đăng nhập; FE không thay thế kiểm tra quyền ở backend. Không thay đổi backend trong chức năng này.
+
+## Cập nhật công thức
+
+- Trang `/recipes` dành cho ADMIN và KITCHENSTAFF: danh sách, tìm tên sản phẩm/mô tả có hoặc không dấu, phân trang.
+- Gọi `GET /recipe`, `GET /recipe/{id}/with-ingredients`, `PUT /recipe/{id}`. Danh sách chỉ trả metadata; luôn tải chi tiết trước khi chỉnh sửa.
+- Giữ nguyên sản phẩm; sửa mô tả và thay toàn bộ danh sách nguyên liệu. FE kiểm tra nguyên liệu trong danh mục, không trùng, định lượng dương tối đa hai chữ số thập phân. Bỏ hết nguyên liệu cần đánh dấu xác nhận.
+- Đọc lại trước khi lưu để phát hiện thay đổi từ phiên khác, đọc lại sau khi lưu để xác nhận. Đây không phải khóa đồng thời ở server. Nếu lưu lỗi, khóa gửi lại trong form và yêu cầu mở lại vì API có thể đã lưu mô tả/xóa nguyên liệu trước khi thêm dòng mới thất bại.
+- Backend hiện chưa phân quyền route công thức; giới hạn ADMIN/KITCHENSTAFF là quy tắc giao diện. Không thay đổi backend trong chức năng này. Kiểm thử dùng API mô phỏng, chưa kiểm tra database thực.
