@@ -23,6 +23,64 @@ const next = {
   ingredients: [{ ingredientID: ingredient, quantity: 1.25 }],
 };
 const fetchMock = vi.fn();
+it("deletes once and verifies absence from the list", async () => {
+  reply(original);
+  reply("Recipe deleted successfully");
+  reply([]);
+  await recipeService.remove("ADMIN", original);
+  expect(fetchMock.mock.calls[1][0]).toBe(`/api/recipe/${id}`);
+  expect(fetchMock.mock.calls[1][1].method).toBe("DELETE");
+  expect(fetchMock).toHaveBeenCalledTimes(3);
+});
+it("reconciles deletion when server returned an error", async () => {
+  reply(original);
+  reply({ message: "error" }, 500);
+  reply([]);
+  await expect(
+    recipeService.remove("KITCHENSTAFF", original),
+  ).resolves.toBeUndefined();
+  expect(
+    fetchMock.mock.calls.filter((c) => c[1]?.method === "DELETE"),
+  ).toHaveLength(1);
+});
+it("does not claim deletion when recipe remains", async () => {
+  reply(original);
+  reply({ message: "constraint" }, 500);
+  reply([
+    { recipeID: id, productID: product, description: original.description },
+  ]);
+  await expect(recipeService.remove("ADMIN", original)).rejects.toThrow(
+    "Chưa xác nhận",
+  );
+});
+it("does not claim deletion when verification fails", async () => {
+  reply(original);
+  reply("ok");
+  reply({ message: "offline" }, 500);
+  await expect(recipeService.remove("ADMIN", original)).rejects.toThrow(
+    "Chưa xác nhận",
+  );
+});
+it("blocks deletion after concurrent edits", async () => {
+  reply({ ...original, description: "changed" });
+  await expect(recipeService.remove("ADMIN", original)).rejects.toThrow(
+    "đã thay đổi",
+  );
+  expect(fetchMock).toHaveBeenCalledTimes(1);
+});
+it("blocks deletion for disallowed roles without fetching", async () => {
+  await expect(recipeService.remove("STORESTAFF", original)).rejects.toThrow(
+    "không có quyền",
+  );
+  expect(fetchMock).not.toHaveBeenCalled();
+});
+it("does not send DELETE when details are already absent", async () => {
+  reply(null, 204);
+  await expect(recipeService.remove("ADMIN", original)).rejects.toThrow(
+    "không còn tồn tại",
+  );
+  expect(fetchMock).toHaveBeenCalledTimes(1);
+});
 const reply = (data: unknown, status = 200) =>
   fetchMock.mockResolvedValueOnce(
     new Response(status === 204 ? null : JSON.stringify(data), { status }),

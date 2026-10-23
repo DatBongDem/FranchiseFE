@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import { BookOpen, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import DeleteRecipeModal from "../components/DeleteRecipeModal";
 import { useResource } from "../hooks/useResource";
 import {
   recipeService,
@@ -255,6 +256,7 @@ export default function RecipesPage() {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(6);
   const [editing, setEditing] = useState<Recipe>();
+  const [deleting, setDeleting] = useState<Recipe>();
   const [notice, setNotice] = useState("");
   const name = (r: Recipe) =>
     resource.data?.products.find(
@@ -353,6 +355,15 @@ export default function RecipesPage() {
                         >
                           Cập nhật
                         </button>
+                        <button
+                          className="button cancel-order-button"
+                          onClick={() => {
+                            setNotice("");
+                            setDeleting(r);
+                          }}
+                        >
+                          Xóa
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -385,6 +396,22 @@ export default function RecipesPage() {
           onSaved={() => {
             setEditing(undefined);
             setNotice("Đã cập nhật và kiểm tra lại công thức thành công.");
+            void resource.reload();
+          }}
+        />
+      )}
+      {deleting && (
+        <DeleteRecipeModal
+          recipe={deleting}
+          name={name(deleting)}
+          role={user!.role}
+          onClose={() => {
+            setDeleting(undefined);
+            void resource.reload();
+          }}
+          onDeleted={() => {
+            setDeleting(undefined);
+            setNotice("Đã xóa công thức và kiểm tra lại danh sách.");
             void resource.reload();
           }}
         />

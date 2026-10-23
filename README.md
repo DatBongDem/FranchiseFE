@@ -115,3 +115,9 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Giữ nguyên sản phẩm; sửa mô tả và thay toàn bộ danh sách nguyên liệu. FE kiểm tra nguyên liệu trong danh mục, không trùng, định lượng dương tối đa hai chữ số thập phân. Bỏ hết nguyên liệu cần đánh dấu xác nhận.
 - Đọc lại trước khi lưu để phát hiện thay đổi từ phiên khác, đọc lại sau khi lưu để xác nhận. Đây không phải khóa đồng thời ở server. Nếu lưu lỗi, khóa gửi lại trong form và yêu cầu mở lại vì API có thể đã lưu mô tả/xóa nguyên liệu trước khi thêm dòng mới thất bại.
 - Backend hiện chưa phân quyền route công thức; giới hạn ADMIN/KITCHENSTAFF là quy tắc giao diện. Không thay đổi backend trong chức năng này. Kiểm thử dùng API mô phỏng, chưa kiểm tra database thực.
+
+## Xóa công thức
+
+- ADMIN/KITCHENSTAFF chọn Xóa tại trang Công thức, xem mô tả/số dòng nguyên liệu và đánh dấu xác nhận.
+- Đọc chi tiết mới nhất trước `DELETE /recipe/{id}` để phát hiện thay đổi từ phiên khác. Kiểm tra công thức đã biến mất khỏi danh sách trước khi báo thành công.
+- Khóa bấm lặp; không tự gửi lại DELETE khi lỗi mạng/server. Nếu chưa xác nhận kết quả, đóng và tải lại để kiểm tra. Không thay đổi backend hoặc FranchiseStore.

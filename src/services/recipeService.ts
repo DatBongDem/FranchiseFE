@@ -53,6 +53,29 @@ export function validateRecipe(r: RecipeDetails, ingredients: Ingredient[]) {
   }
 }
 export const recipeService = {
+  async remove(role: Role, original: RecipeDetails) {
+    assertRole(role);
+    const latest = await this.details(role, original.recipeID);
+    if (recipeFingerprint(latest) !== recipeFingerprint(original))
+      throw new Error(
+        "Công thức đã thay đổi. Đóng và mở lại để kiểm tra trước khi xóa.",
+      );
+    try {
+      await api(`/recipe/${original.recipeID}`, { method: "DELETE" });
+    } catch {
+      // A lost response may follow a successful deletion; never replay DELETE.
+    }
+    const remaining = await this.list(role).catch(() => null);
+    if (
+      !remaining ||
+      remaining.some(
+        (r) => r.recipeID.toLowerCase() === original.recipeID.toLowerCase(),
+      )
+    )
+      throw new Error(
+        "Chưa xác nhận được việc xóa. Đóng và tải lại danh sách để kiểm tra trước khi thao tác tiếp.",
+      );
+  },
   async list(role: Role): Promise<Recipe[]> {
     assertRole(role);
     const data = normalize<Recipe[]>(await api("/recipe"));
