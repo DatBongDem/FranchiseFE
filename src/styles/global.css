@@ -367,6 +367,7 @@ h3 {
   bottom: 1px;
 }
 .sidebar {
+  overflow-y: auto;
   width: 248px;
   height: 100dvh;
   position: fixed;
