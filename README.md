@@ -40,7 +40,17 @@ npm run preview
 
 Frontend kiểm tra session qua `/users/me`, lưu token trong `sessionStorage` và xóa khi đăng xuất/401. Route/menu chỉ hỗ trợ trải nghiệm; quyền dữ liệu và thao tác vẫn cần backend xác thực. Một số API công khai hiện tại của backend chưa có role guard; việc ẩn nút trong FE không thay thế bảo vệ backend. Lọc cửa hàng ở UI cũng không thay thế phân quyền dữ liệu tại API.
 
-Chưa triển khai POS/tạo hóa đơn, tạo đơn nhập, sửa/xóa sản phẩm, công thức, báo cáo doanh thu/hao hụt. Không sửa backend hoặc FranchiseStore trong lần dựng FE này.
+Chưa triển khai POS/tạo hóa đơn, sửa/xóa sản phẩm, công thức, báo cáo doanh thu/hao hụt. Không sửa backend hoặc FranchiseStore trong lần dựng FE này.
+
+## Tạo đơn hàng (STORESTAFF)
+
+Vào **Đơn hàng → Tạo / tiếp tục đơn** (`/orders/new`). Tìm tên sản phẩm, lọc danh mục, phân trang và thêm số lượng vào đơn. Có thể lưu số lượng mới, xóa món, chọn loại đơn Normal/Fast/Express, lưu ghi chú và xác nhận gửi đơn sang Pending. Tổng tiền lấy từ backend theo giá nhập, không dùng giá bán lẻ.
+
+API dùng: `GET /order/check-creating`, `GET /order/:id/details`, `POST /productbatches`, `PUT /productbatches/:productId`, `PUT /order/:id` và `PUT /order/:id/sent-to-pending`. Backend tạo sẵn đơn Creating khi tạo cửa hàng và tự tạo nháp kế tiếp sau khi gửi; FE không gọi POST /order vì endpoint đó không tồn tại. Nếu cửa hàng thiếu nháp, màn hình báo lỗi để quản trị viên kiểm tra dữ liệu.
+
+Các món được lưu ngay sau thao tác thêm/lưu số lượng/xóa; ghi chú và loại đơn lưu khi bấm Lưu nháp hoặc Gửi. Các đơn nháp dùng chung theo cửa hàng. FE kiểm tra ID/trạng thái trước thao tác, khóa nút khi đang gửi và tải lại dữ liệu sau mutation. Backend hiện không cung cấp transaction/version cho toàn bộ luồng; kiểm tra tại FE không bảo đảm loại bỏ hoàn toàn xung đột giữa nhiều người thao tác đồng thời.
+
+Kiểm thử tự động mock HTTP bao phủ DTO, số lượng, quyền route, đơn rỗng, nháp thay đổi, lưu ghi chú thất bại và phản hồi gửi đơn bị mất; chưa thay thế kiểm thử với database thật.
 
 ## Git workflow
 
