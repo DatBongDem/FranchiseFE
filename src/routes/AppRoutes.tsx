@@ -11,6 +11,7 @@ import ProductPage from "../pages/ProductPage";
 import OrdersPage from "../pages/OrdersPage";
 import IngredientsPage from "../pages/IngredientsPage";
 import UsersPage from "../pages/UsersPage";
+import CreateOrderPage from "../pages/CreateOrderPage";
 function Layout() {
   const { user, loading } = useAuth();
   const [open, setOpen] = useState(false);
@@ -45,6 +46,7 @@ export default function AppRoutes() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/products" element={<ProductPage />} />
         <Route path="/orders" element={<OrdersPage />} />
+        <Route path="/orders/new" element={<CreateOrderPage />} />
         <Route path="/kitchen" element={<OrdersPage />} />
         <Route path="/delivery" element={<OrdersPage />} />
         <Route path="/ingredients" element={<IngredientsPage />} />

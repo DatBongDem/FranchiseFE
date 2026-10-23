@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { RefreshCw, ArrowUpRight } from "lucide-react";
+import { RefreshCw, ArrowUpRight, Plus } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useResource } from "../hooks/useResource";
 import { operationsService } from "../services/operationsService";
@@ -35,10 +36,11 @@ export function actionFor(role: string, status: string) {
 }
 export default function OrdersPage() {
   const { user } = useAuth();
+  const location = useLocation();
   const role = user!.role;
   const resource = useResource(
     () => operationsService.orders(role, user?.idStore),
-    [role],
+    [role, user?.idStore],
   );
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
@@ -50,7 +52,11 @@ export default function OrdersPage() {
   const [pending, setPending] = useState<Order>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState(() =>
+    location.state?.createdOrderId
+      ? `Đã gửi đơn #${String(location.state.createdOrderId).slice(0, 8).toUpperCase()} thành công.`
+      : "",
+  );
   const rows = (resource.data || [])
     .filter(
       (o) =>
@@ -117,6 +123,11 @@ export default function OrdersPage() {
               : "Tra cứu đơn hàng, trạng thái xử lý và thời gian gửi đơn."
         }
       >
+        {role === "STORESTAFF" && (
+          <Link className="button primary" to="/orders/new">
+            <Plus size={16} /> Tạo / tiếp tục đơn
+          </Link>
+        )}
         <button
           className="button secondary"
           onClick={() => void resource.reload()}

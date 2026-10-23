@@ -19,8 +19,10 @@ export default function Header({ onMenu }: { onMenu: () => void }) {
         <span>Workspace</span>
         <span>/</span>
         <strong>
-          {navigation.find((item) => item.path === location.pathname)?.label ||
-            "Tổng quan"}
+          {location.pathname === "/orders/new"
+            ? "Tạo đơn hàng"
+            : navigation.find((item) => item.path === location.pathname)
+                ?.label || "Tổng quan"}
         </strong>
       </div>
       <div className="header-right">

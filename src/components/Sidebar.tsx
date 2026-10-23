@@ -64,6 +64,7 @@ export const navigation = [
   },
 ];
 export function allowed(path: string, role: Role) {
+  if (path === "/orders/new") return role === "STORESTAFF";
   return (
     navigation.find((item) => item.path === path)?.roles.includes(role) ?? false
   );
