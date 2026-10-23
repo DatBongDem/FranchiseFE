@@ -7,6 +7,7 @@ import "./styles/revenue.css";
 import "./styles/shrinkage.css";
 import "./styles/store-bills.css";
 import "./styles/cancel-order.css";
+import "./styles/recipes.css";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
