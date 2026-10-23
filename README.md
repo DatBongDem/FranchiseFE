@@ -91,3 +91,11 @@ Repository: https://github.com/DatBongDem/FranchiseFE.git. `main` là nhánh ch�
 `src/components` giao diện chung; `pages` các màn hình; `services` HTTP và chuẩn hóa DTO PascalCase/camelCase; `types` kiểu dữ liệu; `hooks` tải dữ liệu; `contexts` session; `routes` kiểm soát đường dẫn theo role; `styles/global.css` theme và responsive; `assets` tài nguyên riêng; `public` favicon.
 
 Google Font có fallback về font hệ thống nếu không truy cập mạng. Ảnh sản phẩm lấy từ API; sản phẩm chưa có ảnh dùng biểu tượng minh họa, không gán ảnh món ăn giả.
+
+## Lịch sử hóa đơn cửa hàng (MANAGER)
+
+- Trang `/store-bills` gọi `GET /bills/billingHistory/{storeId}` với cửa hàng được phân công.
+- Lọc ngày từ/đến tùy chọn; gửi trọn ngày theo UTC+7. Phân trang server 6/12/24 hóa đơn, mới nhất trước.
+- Tìm mã hóa đơn hoặc tên sản phẩm có/không dấu trong trang hiện tại; không tìm trên các trang chưa tải.
+- Xem chi tiết trực tiếp từ API lịch sử, giữ các dòng theo lô hàng. Tổng tiền trang được phân biệt với tổng số hóa đơn trong khoảng ngày.
+- Có trạng thái đang tải, lỗi/thử lại và không có dữ liệu. Kiểm thử dùng API mô phỏng; chưa xác nhận database thực.
