@@ -13,6 +13,7 @@ import IngredientsPage from "../pages/IngredientsPage";
 import UsersPage from "../pages/UsersPage";
 import CreateOrderPage from "../pages/CreateOrderPage";
 import CreateBillPage from "../pages/CreateBillPage";
+import RevenuePage from "../pages/RevenuePage";
 function Layout() {
   const { user, loading } = useAuth();
   const [open, setOpen] = useState(false);
@@ -49,6 +50,7 @@ export default function AppRoutes() {
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/orders/new" element={<CreateOrderPage />} />
         <Route path="/bills" element={<CreateBillPage />} />
+        <Route path="/revenue" element={<RevenuePage />} />
         <Route path="/kitchen" element={<OrdersPage />} />
         <Route path="/delivery" element={<OrdersPage />} />
         <Route path="/ingredients" element={<IngredientsPage />} />

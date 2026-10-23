@@ -7,6 +7,7 @@ import {
   LogOut,
   Package,
   ReceiptText,
+  BarChart3,
   ShoppingBag,
   Truck,
   Users,
@@ -44,6 +45,12 @@ export const navigation = [
     label: "Bán hàng / Hóa đơn",
     icon: ReceiptText,
     roles: ["STORESTAFF"],
+  },
+  {
+    path: "/revenue",
+    label: "Doanh thu cửa hàng",
+    icon: BarChart3,
+    roles: ["MANAGER"],
   },
   {
     path: "/kitchen",

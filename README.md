@@ -40,7 +40,7 @@ npm run preview
 
 Frontend kiểm tra session qua `/users/me`, lưu token trong `sessionStorage` và xóa khi đăng xuất/401. Route/menu chỉ hỗ trợ trải nghiệm; quyền dữ liệu và thao tác vẫn cần backend xác thực. Một số API công khai hiện tại của backend chưa có role guard; việc ẩn nút trong FE không thay thế bảo vệ backend. Lọc cửa hàng ở UI cũng không thay thế phân quyền dữ liệu tại API.
 
-Chưa triển khai sửa/xóa sản phẩm, công thức, báo cáo doanh thu/hao hụt. Không sửa backend hoặc FranchiseStore trong lần dựng FE này.
+Chưa triển khai sửa/xóa sản phẩm, công thức, báo cáo hao hụt. Không sửa backend hoặc FranchiseStore trong lần dựng FE này.
 
 ## Tạo đơn hàng (STORESTAFF)
 
@@ -61,6 +61,16 @@ API: `GET /product`, `GET /productbatches/:storeId/inventory`, `POST /bills` v�
 Nút tạo bị khóa trong lúc gửi. Trạng thái gửi/mã hóa đơn được lưu trong `sessionStorage` theo tài khoản và cửa hàng. Lỗi tồn kho 422 giữ giỏ để sửa. Mất phản hồi POST/HTTP 5xx/kết quả thiếu BillId được coi là chưa xác định: không tự retry, yêu cầu đối chiếu lịch sử trước khi bắt đầu giao dịch mới. Lỗi tải bản in chỉ tải lại bản in. Cơ chế FE này không thay thế idempotency phía backend và không đồng bộ giữa các tab; giỏ chưa gửi không lưu khi đổi trang.
 
 Kiểm thử mock HTTP bao phủ quyền, kho, validation số lượng, payload, phản hồi PascalCase, lỗi tạo/in, phân trang và trạng thái phục hồi. Chưa kiểm thử với SQL Server thật hoặc máy in thực tế. Không bổ sung API thanh toán, giảm giá hay VAT vì backend hiện chưa cung cấp.
+
+## Doanh thu cửa hàng (MANAGER)
+
+Vào **Doanh thu cửa hàng** (`/revenue`) hoặc nút báo cáo trên dashboard quản lý. Chọn từ ngày/đến ngày hoặc Hôm nay, 7 ngày gần đây, Tháng này; bấm Xem báo cáo. Mặc định từ đầu tháng đến hôm nay theo lịch Việt Nam. API nhận `date` và `endDate` dưới dạng `YYYY-MM-DD`, giữ nguyên ngày do người dùng chọn; backend quyết định ranh giới truy vấn theo semantics hiện tại, gồm cả ngày kết thúc.
+
+Gọi `GET /bills/stores/:storeId/revenue?date=&endDate=` với cửa hàng từ tài khoản. Mặc dù route backend liệt kê nhiều role, service thực tế chỉ cho MANAGER đúng cửa hàng; FE theo quyền này. Báo cáo có tổng doanh thu, giá vốn, lợi nhuận gộp, số sản phẩm phát sinh; Top 5 doanh thu theo sản phẩm; bảng tìm tên có/không dấu, sắp xếp và phân trang client. Bộ lọc tên chỉ ảnh hưởng bảng, không đổi tổng quan/biểu đồ của kỳ.
+
+Số tiền lấy từ `data.summary` và `data.items`; không tự tạo chuỗi doanh thu ngày từ `saleDate` vì backend tổng hợp theo sản phẩm cho cả kỳ. Lợi nhuận âm được giữ nguyên, biên lợi nhuận khi doanh thu bằng 0 hiển thị `—`. Lợi nhuận này là lãi gộp, không phải lãi ròng; giá vốn được backend tính theo giá sản phẩm hiện tại. Trạng thái trống/lỗi/quyền truy cập được hiển thị riêng, không biến lỗi API thành doanh thu 0.
+
+Kiểm thử mock HTTP bao phủ quyền, cửa hàng, ngày nhuận, khoảng ngày, múi giờ preset, decimal/lợi nhuận âm, dữ liệu trống/sai cấu trúc, tìm kiếm và sắp xếp. Chưa kiểm thử tích hợp với SQL Server thật.
 
 ## Git workflow
 
