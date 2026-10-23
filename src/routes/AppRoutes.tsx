@@ -15,6 +15,7 @@ import CreateOrderPage from "../pages/CreateOrderPage";
 import CreateBillPage from "../pages/CreateBillPage";
 import RevenuePage from "../pages/RevenuePage";
 import ShrinkagePage from "../pages/ShrinkagePage";
+import StoreBillHistoryPage from "../pages/StoreBillHistoryPage";
 function Layout() {
   const { user, loading } = useAuth();
   const [open, setOpen] = useState(false);
@@ -53,6 +54,7 @@ export default function AppRoutes() {
         <Route path="/bills" element={<CreateBillPage />} />
         <Route path="/revenue" element={<RevenuePage />} />
         <Route path="/shrinkage" element={<ShrinkagePage />} />
+        <Route path="/store-bills" element={<StoreBillHistoryPage />} />
         <Route path="/kitchen" element={<OrdersPage />} />
         <Route path="/delivery" element={<OrdersPage />} />
         <Route path="/ingredients" element={<IngredientsPage />} />

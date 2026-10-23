@@ -5,6 +5,7 @@ import "./styles/global.css";
 import "./styles/billing.css";
 import "./styles/revenue.css";
 import "./styles/shrinkage.css";
+import "./styles/store-bills.css";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
