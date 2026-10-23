@@ -143,3 +143,10 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Kiểm tra lại danh sách trước `POST /recipe`; đọc lại danh sách và chi tiết sau khi tạo để xác minh vì phản hồi POST không chứa recipeID mới.
 - Chống bấm lặp, không tự gửi lại khi lỗi mạng/server. Nếu tạo dở, đóng form, tải lại và dùng cập nhật công thức để kiểm tra/bổ sung.
 - Kiểm thử bằng API mô phỏng; chưa kiểm tra database thực. Không chỉnh sửa hoặc push FranchiseStore.
+
+## Lịch sử nguyên liệu
+
+- KITCHENSTAFF mở `/ingredient-history`, gọi `GET /ingredient/ingredient-history?pageNumber=...&pageSize=...` với phân trang server 6/12/24.
+- Hiển thị tên, mã nguyên liệu, lượng đã dùng và đơn vị; giữ riêng các dòng lặp theo dữ liệu API. Tìm tên không dấu và lọc đơn vị trong trang hiện tại.
+- API sắp mới nhất trước nhưng chưa trả CreatedTime, mã đơn/lô hoặc ID lịch sử; chưa có lọc ngày. Không cộng số lượng của nguyên liệu/đơn vị khác nhau.
+- Có loading, lỗi/thử lại, danh sách trống và quay về trang đầu. Kiểm thử API mô phỏng; chưa kiểm tra database thực. Không sửa backend hoặc FranchiseStore.
