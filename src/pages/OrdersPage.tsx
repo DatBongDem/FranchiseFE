@@ -16,6 +16,8 @@ import {
   statusLabels,
 } from "../components/ui";
 import type { Order } from "../types/product";
+import CancelOrderModal from "../components/CancelOrderModal";
+import { canCancelOrder } from "../services/cancelOrderService";
 export function actionFor(role: string, status: string) {
   if (role === "KITCHENSTAFF") {
     if (status === "WaitingForCooking")
@@ -49,6 +51,7 @@ export default function OrdersPage() {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(6);
   const [selected, setSelected] = useState<Order>();
+  const [canceling, setCanceling] = useState<Order>();
   const [pending, setPending] = useState<Order>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -285,6 +288,17 @@ export default function OrdersPage() {
                                 {action.label}
                               </button>
                             )}
+                            {canCancelOrder(user!, o) && (
+                              <button
+                                className="button small cancel-order-button"
+                                onClick={() => {
+                                  setNotice("");
+                                  setCanceling(o);
+                                }}
+                              >
+                                Hủy đơn
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -345,6 +359,23 @@ export default function OrdersPage() {
             </p>
           )}
         </Modal>
+      )}
+      {canceling && (
+        <CancelOrderModal
+          order={canceling}
+          user={user!}
+          onClose={() => {
+            setCanceling(undefined);
+            void resource.reload();
+          }}
+          onDone={(order) => {
+            setCanceling(undefined);
+            setNotice(
+              `Đã hủy đơn #${order.orderId.slice(0, 8).toUpperCase()}.`,
+            );
+            void resource.reload();
+          }}
+        />
       )}
       {pending && (
         <Modal
