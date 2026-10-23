@@ -38,8 +38,8 @@ const content: Record<
     title: "Cửa hàng trong tầm tay",
     description: "Theo dõi đơn hàng và hoạt động của cửa hàng mỗi ngày.",
     focus: "Mỗi đơn hàng chỉn chu. Mỗi khách hàng hài lòng.",
-    route: "/orders",
-    cta: "Theo dõi đơn hàng",
+    route: "/revenue",
+    cta: "Xem doanh thu cửa hàng",
   },
   STORESTAFF: {
     title: "Sẵn sàng cho một ngày mới",
