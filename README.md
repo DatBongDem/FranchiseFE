@@ -40,7 +40,7 @@ npm run preview
 
 Frontend kiểm tra session qua `/users/me`, lưu token trong `sessionStorage` và xóa khi đăng xuất/401. Route/menu chỉ hỗ trợ trải nghiệm; quyền dữ liệu và thao tác vẫn cần backend xác thực. Một số API công khai hiện tại của backend chưa có role guard; việc ẩn nút trong FE không thay thế bảo vệ backend. Lọc cửa hàng ở UI cũng không thay thế phân quyền dữ liệu tại API.
 
-Chưa triển khai sửa/xóa sản phẩm, công thức, báo cáo hao hụt. Không sửa backend hoặc FranchiseStore trong lần dựng FE này.
+Chưa triển khai sửa/xóa sản phẩm và công thức. Không sửa backend hoặc FranchiseStore trong lần dựng FE này.
 
 ## Tạo đơn hàng (STORESTAFF)
 
@@ -71,6 +71,16 @@ Gọi `GET /bills/stores/:storeId/revenue?date=&endDate=` với cửa hàng từ
 Số tiền lấy từ `data.summary` và `data.items`; không tự tạo chuỗi doanh thu ngày từ `saleDate` vì backend tổng hợp theo sản phẩm cho cả kỳ. Lợi nhuận âm được giữ nguyên, biên lợi nhuận khi doanh thu bằng 0 hiển thị `—`. Lợi nhuận này là lãi gộp, không phải lãi ròng; giá vốn được backend tính theo giá sản phẩm hiện tại. Trạng thái trống/lỗi/quyền truy cập được hiển thị riêng, không biến lỗi API thành doanh thu 0.
 
 Kiểm thử mock HTTP bao phủ quyền, cửa hàng, ngày nhuận, khoảng ngày, múi giờ preset, decimal/lợi nhuận âm, dữ liệu trống/sai cấu trúc, tìm kiếm và sắp xếp. Chưa kiểm thử tích hợp với SQL Server thật.
+
+## Hao hụt cửa hàng (MANAGER)
+
+Vào **Hao hụt cửa hàng** (`/shrinkage`). FE gọi `GET /productbatches/:storeId/shrinkage` với cửa hàng được gán cho tài khoản quản lý; không cho các role khác mở trang. Hiển thị số lượng hết hạn, giá trị thiệt hại, số sản phẩm khác nhau và số nhóm sản phẩm/ngày hết hạn tại thời điểm `calculatedAt` do backend trả về.
+
+Bộ lọc tên có/không dấu, từ/đến ngày hết hạn (có thể bỏ trống một hoặc cả hai mốc), sắp xếp và phân trang đều chạy phía client vì endpoint chưa hỗ trợ tham số lọc. Lọc giữ nguyên tổng toàn cửa hàng, đồng thời hiển thị tổng số lượng/thiệt hại của kết quả lọc. Top 5 gộp các ngày hết hạn theo ProductId trước khi xếp hạng. Ngày SQL được giữ nguyên ngày lịch, không đổi qua múi giờ trình duyệt.
+
+Đây là ảnh chụp số lượng còn lại đã hết hạn, không phải lịch sử các lần tiêu hủy; không có thao tác trừ kho. Giá trị thiệt hại tính theo giá vốn sản phẩm hiện tại từ backend, tổng số lượng chưa quy đổi đơn vị. Dữ liệu trống, không có kết quả lọc, lỗi API và lỗi quyền được hiển thị riêng.
+
+Kiểm thử mock HTTP bao phủ quyền/cửa hàng, DTO/decimal, dữ liệu sai, ngày hết hạn, bộ lọc hai biên, sắp xếp, tổng theo bộ lọc và gộp sản phẩm qua nhiều ngày. Chưa kiểm thử tích hợp SQL Server thật.
 
 ## Git workflow
 
