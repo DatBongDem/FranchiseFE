@@ -157,3 +157,10 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Hiển thị nguyên liệu đã sử dụng trong lịch sử chế biến, không phải dự toán trước khi nấu. Có tìm tên không dấu, phân trang cục bộ 6/12/24 và tải lại.
 - Giữ riêng các dòng lịch sử, không cộng các đơn vị khác nhau. Phân biệt đơn chưa có lịch sử, đơn không tồn tại và lỗi API.
 - Kiểm thử API mô phỏng, chưa kiểm tra database thực. Không sửa backend hay FranchiseStore.
+
+## Tồn kho cửa hàng
+
+- MANAGER/STORESTAFF mở `/store-inventory`, gọi `GET /productbatches/{idStore}/inventory` theo cửa hàng được phân công.
+- Tên/mã sản phẩm, lượng còn lại, đơn vị; tìm không dấu, lọc còn hàng/không còn lượng khả dụng, đơn vị, sắp xếp, phân trang cục bộ 6/12/24 và tải lại.
+- API chỉ tính lô từ đơn Completed, chưa hết hạn hoặc không có hạn dùng. Không bổ sung giả các sản phẩm không được API trả về, không cộng lẫn đơn vị, không tính giá trị tồn kho. Chưa có ngày hết hạn từng lô để lọc ngày.
+- Giới hạn role/cửa hàng được thực hiện ở FE; endpoint backend hiện chỉ yêu cầu đăng nhập. Không thay đổi backend/FranchiseStore. Kiểm thử API mô phỏng, chưa kiểm tra database thực.
