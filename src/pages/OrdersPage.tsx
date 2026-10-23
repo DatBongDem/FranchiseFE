@@ -20,6 +20,7 @@ import CancelOrderModal from "../components/CancelOrderModal";
 import { canCancelOrder } from "../services/cancelOrderService";
 import CompleteOrderModal from "../components/CompleteOrderModal";
 import { canCompleteOrder } from "../services/completeOrderService";
+import OrderIngredientsModal from "../components/OrderIngredientsModal";
 export function actionFor(role: string, status: string) {
   if (role === "KITCHENSTAFF") {
     if (status === "WaitingForCooking")
@@ -55,6 +56,7 @@ export default function OrdersPage() {
   const [selected, setSelected] = useState<Order>();
   const [canceling, setCanceling] = useState<Order>();
   const [receiving, setReceiving] = useState<Order>();
+  const [ingredientOrder, setIngredientOrder] = useState<Order>();
   const [pending, setPending] = useState<Order>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -313,6 +315,14 @@ export default function OrdersPage() {
                                 Xác nhận nhận hàng
                               </button>
                             )}
+                            {kitchen && (
+                              <button
+                                className="button small secondary"
+                                onClick={() => setIngredientOrder(o)}
+                              >
+                                Xem nguyên liệu
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -406,6 +416,13 @@ export default function OrdersPage() {
             );
             void resource.reload();
           }}
+        />
+      )}
+      {ingredientOrder && (
+        <OrderIngredientsModal
+          order={ingredientOrder}
+          role={role}
+          onClose={() => setIngredientOrder(undefined)}
         />
       )}
       {pending && (

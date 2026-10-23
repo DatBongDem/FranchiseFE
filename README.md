@@ -150,3 +150,10 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Hiển thị tên, mã nguyên liệu, lượng đã dùng và đơn vị; giữ riêng các dòng lặp theo dữ liệu API. Tìm tên không dấu và lọc đơn vị trong trang hiện tại.
 - API sắp mới nhất trước nhưng chưa trả CreatedTime, mã đơn/lô hoặc ID lịch sử; chưa có lọc ngày. Không cộng số lượng của nguyên liệu/đơn vị khác nhau.
 - Có loading, lỗi/thử lại, danh sách trống và quay về trang đầu. Kiểm thử API mô phỏng; chưa kiểm tra database thực. Không sửa backend hoặc FranchiseStore.
+
+## Nguyên liệu theo đơn nấu
+
+- KITCHENSTAFF vào Bếp trung tâm → Xem nguyên liệu tại từng đơn. Gọi `GET /ingredient/{orderId}/ingredients`.
+- Hiển thị nguyên liệu đã sử dụng trong lịch sử chế biến, không phải dự toán trước khi nấu. Có tìm tên không dấu, phân trang cục bộ 6/12/24 và tải lại.
+- Giữ riêng các dòng lịch sử, không cộng các đơn vị khác nhau. Phân biệt đơn chưa có lịch sử, đơn không tồn tại và lỗi API.
+- Kiểm thử API mô phỏng, chưa kiểm tra database thực. Không sửa backend hay FranchiseStore.

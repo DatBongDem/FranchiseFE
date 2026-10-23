@@ -139,3 +139,83 @@ it("filters names without accents and exact units without aggregating rows", () 
   expect(filterIngredientHistory(items, "missing", "")).toEqual([]);
   expect(items).toHaveLength(3);
 });
+
+const orderId = "aaaaaaaa-1111-2222-3333-444444444444";
+it("loads ingredients for the exact order with auth", async () => {
+  reply([item]);
+  expect(
+    await ingredientHistoryService.byOrder("KITCHENSTAFF", orderId),
+  ).toEqual([item]);
+  expect(fetchMock).toHaveBeenCalledWith(
+    `/api/ingredient/${orderId}/ingredients`,
+    expect.objectContaining({ headers: { Authorization: "Bearer token" } }),
+  );
+});
+it.each(["ADMIN", "MANAGER", "STORESTAFF", "SUPPLYCOORDINATOR"] as const)(
+  "blocks order ingredients for %s",
+  async (role) => {
+    await expect(
+      ingredientHistoryService.byOrder(role, orderId),
+    ).rejects.toThrow("Chỉ nhân viên bếp");
+    expect(fetchMock).not.toHaveBeenCalled();
+  },
+);
+it("validates order ID before fetching", async () => {
+  await expect(
+    ingredientHistoryService.byOrder("KITCHENSTAFF", "bad"),
+  ).rejects.toThrow("Mã đơn");
+  expect(fetchMock).not.toHaveBeenCalled();
+});
+it("accepts an order without recorded ingredient use", async () => {
+  reply([]);
+  expect(
+    await ingredientHistoryService.byOrder("KITCHENSTAFF", orderId),
+  ).toEqual([]);
+});
+it("preserves repeated ingredient rows and decimal quantity", async () => {
+  reply([
+    {
+      IngredientId: "i1",
+      IngredientName: "N/A",
+      QuantityUsed: "0.125",
+      Unit: "kg",
+    },
+    item,
+  ]);
+  const result = await ingredientHistoryService.byOrder(
+    "KITCHENSTAFF",
+    orderId,
+  );
+  expect(result).toHaveLength(2);
+  expect(result[0].quantityUsed).toBe(0.125);
+});
+it.each([
+  {},
+  null,
+  [{ ...item, quantityUsed: null }],
+  [{ ...item, quantityUsed: "" }],
+  [{ ...item, unit: null }],
+])("rejects malformed order ingredients", async (value) => {
+  reply(value);
+  await expect(
+    ingredientHistoryService.byOrder("KITCHENSTAFF", orderId),
+  ).rejects.toThrow("không hợp lệ");
+});
+it("explains missing order", async () => {
+  reply({}, 404);
+  await expect(
+    ingredientHistoryService.byOrder("KITCHENSTAFF", orderId),
+  ).rejects.toThrow("không còn tồn tại");
+});
+it("explains forbidden order ingredient access", async () => {
+  reply({}, 403);
+  await expect(
+    ingredientHistoryService.byOrder("KITCHENSTAFF", orderId),
+  ).rejects.toThrow("không có quyền");
+});
+it("does not turn server errors into an empty order", async () => {
+  reply({ message: "server error" }, 500);
+  await expect(
+    ingredientHistoryService.byOrder("KITCHENSTAFF", orderId),
+  ).rejects.toThrow("server error");
+});
