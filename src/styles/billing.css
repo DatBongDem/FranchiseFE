@@ -1,0 +1,218 @@
+.bill-success {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px;
+  background: #eaf3e3;
+  border: 1px solid #d5e5ca;
+  border-radius: 12px;
+  color: #426a35;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.bill-success > div {
+  flex: 1;
+  min-width: 190px;
+}
+.bill-success p {
+  font-size: 11px;
+  margin: 8px 0 0;
+  overflow-wrap: anywhere;
+}
+.bill-uncertain {
+  padding: 22px;
+  background: #fff4df;
+  border: 1px solid #eddcb6;
+  border-radius: 12px;
+  color: #836126;
+  margin-bottom: 24px;
+}
+.bill-uncertain p {
+  font-size: 12px;
+  line-height: 1.9;
+  margin: 12px 0 18px;
+}
+.bill-uncertain .row-actions {
+  flex-wrap: wrap;
+}
+.stock-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 10px;
+  color: #678254;
+  gap: 8px;
+}
+.stock-toggle input {
+  accent-color: #56833f;
+}
+.bill-empty {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+  padding: 40px 15px;
+  color: #8b9d7c;
+  text-align: center;
+}
+.bill-empty p {
+  font-size: 11px;
+  line-height: 1.8;
+}
+.bill-unit-price {
+  display: block;
+  color: #8a977f;
+  font-size: 10px;
+  margin-top: 9px;
+}
+.bill-submit {
+  width: 100%;
+}
+.bill-pos .order-catalog article > div {
+  overflow-wrap: anywhere;
+}
+.bill-receipt {
+  color: #34462f;
+}
+.receipt-brand {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.receipt-brand strong {
+  font-size: 21px;
+}
+.receipt-brand span {
+  font-size: 11px;
+  line-height: 1.8;
+}
+.bill-receipt h2 {
+  text-align: center;
+  font-size: 16px;
+  letter-spacing: 1px;
+  margin-bottom: 22px;
+}
+.receipt-meta {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 10px;
+  font-size: 10px;
+  line-height: 1.8;
+  border-bottom: 1px dashed #ccd6c4;
+  padding-bottom: 22px;
+  margin-bottom: 18px;
+}
+.receipt-meta dt {
+  color: #8b977f;
+}
+.receipt-meta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.bill-receipt th,
+.bill-receipt td {
+  padding: 11px 7px;
+  font-size: 10px;
+}
+.bill-receipt th {
+  font-size: 8px;
+}
+.bill-receipt td:first-child {
+  white-space: normal;
+  min-width: 110px;
+}
+.receipt-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px dashed #bdcdb4;
+  padding-top: 20px;
+  margin-top: 16px;
+}
+.receipt-total strong {
+  font-size: 22px;
+  color: #d86233;
+}
+.receipt-note {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+  line-height: 1.8;
+  margin: 20px 0;
+}
+.receipt-thanks {
+  text-align: center;
+  color: #8a9c7e;
+  font-size: 11px;
+  margin: 25px 0;
+}
+.receipt-print {
+  width: 100%;
+}
+.bill-history {
+  margin-top: 20px;
+}
+@media print {
+  @page {
+    size: auto;
+    margin: 12mm;
+  }
+  body:has(.bill-receipt) .sidebar,
+  body:has(.bill-receipt) .sidebar-overlay,
+  body:has(.bill-receipt) .header,
+  body:has(.bill-receipt) footer,
+  body:has(.bill-receipt) .skip-link,
+  body:has(.bill-receipt) main > :not(dialog) {
+    display: none !important;
+  }
+  body:has(.bill-receipt) .main-shell,
+  body:has(.bill-receipt) main {
+    display: block !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  body:has(.bill-receipt) dialog:open {
+    position: static !important;
+    inset: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    border: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: white !important;
+  }
+  body:has(.bill-receipt) dialog::backdrop {
+    background: white !important;
+    backdrop-filter: none !important;
+  }
+  body:has(.bill-receipt) dialog .modal-head,
+  body:has(.bill-receipt) .receipt-print {
+    display: none !important;
+  }
+  .bill-receipt .table-wrap {
+    overflow: visible !important;
+  }
+  .bill-receipt table {
+    white-space: normal !important;
+  }
+  .bill-receipt tr {
+    break-inside: avoid;
+  }
+  .bill-receipt thead {
+    display: table-header-group;
+  }
+  .bill-receipt {
+    color: #000 !important;
+  }
+  .bill-receipt .receipt-total strong {
+    color: #000 !important;
+  }
+}

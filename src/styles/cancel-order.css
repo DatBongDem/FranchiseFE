@@ -1,0 +1,42 @@
+.cancel-order-content {
+  padding: 8px 20px 20px;
+}
+.cancel-order-warning {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: #fff1eb;
+  border: 1px solid #f7d3c3;
+  border-radius: 12px;
+  padding: 14px;
+  color: #a83c23;
+}
+.cancel-order-warning svg {
+  flex-shrink: 0;
+}
+.cancel-order-warning p {
+  margin: 0;
+  line-height: 1.6;
+}
+.cancel-order-reason {
+  display: grid;
+  gap: 10px;
+  font-weight: 600;
+}
+.cancel-order-reason textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 100px;
+  font: inherit;
+}
+.button.cancel-order-button {
+  background: #bd3b2b;
+  color: white;
+  border: 1px solid #bd3b2b;
+}
+.button.cancel-order-button:hover {
+  background: #a82f20;
+}
+.cancel-order-content dd {
+  overflow-wrap: anywhere;
+}

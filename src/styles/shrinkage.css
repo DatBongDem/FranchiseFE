@@ -1,0 +1,125 @@
+.shrinkage-intro {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 22px;
+  background: #fcf0df;
+  border: 1px solid #f0dfc8;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  color: #a57942;
+}
+.shrinkage-intro svg {
+  flex-shrink: 0;
+}
+.shrinkage-intro p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.9;
+}
+.shrinkage-loss {
+  color: #cb6540 !important;
+}
+.shrinkage-filters form {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 0 23px 22px;
+}
+.shrinkage-filters label {
+  min-width: 150px;
+  font-size: 10px;
+  color: #7e8e72;
+}
+.shrinkage-search {
+  flex: 1;
+  min-width: 190px !important;
+}
+.shrinkage-filters > .inline-error {
+  margin: 0 23px 20px;
+}
+.shrinkage-filter-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 22px;
+  padding: 18px 22px;
+  border: 1px solid #e5e9dc;
+  background: #f1f5e9;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  font-size: 10px;
+  color: #8c9a7c;
+}
+.shrinkage-filter-summary > div {
+  flex: 1;
+  min-width: 200px;
+}
+.shrinkage-filter-summary strong {
+  font-size: 12px;
+  color: #64804d;
+}
+.shrinkage-filter-summary p {
+  margin: 8px 0 0;
+  font-size: 9px;
+  line-height: 1.9;
+}
+.shrinkage-filter-summary b {
+  font-size: 13px;
+  color: #6e8759;
+}
+.shrinkage-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  padding: 45px 24px;
+  color: #8da77a;
+}
+.shrinkage-empty h2 {
+  margin: 0;
+  font-size: 17px;
+  color: #66844f;
+}
+.shrinkage-empty p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.8;
+}
+.shrinkage-bar:hover {
+  background: transparent;
+}
+@media (max-width: 680px) {
+  .shrinkage-intro {
+    padding: 16px;
+  }
+  .shrinkage-intro p {
+    font-size: 10px;
+  }
+  .shrinkage-filters form {
+    padding: 0 17px 20px;
+    gap: 10px;
+  }
+  .shrinkage-filters label {
+    flex: 1;
+    min-width: 125px;
+  }
+  .shrinkage-search {
+    flex-basis: 100%;
+  }
+  .shrinkage-filter-summary {
+    gap: 15px;
+    padding: 16px;
+  }
+  .shrinkage-filter-summary > div {
+    flex-basis: 100%;
+  }
+  .shrinkage-filters > .inline-error {
+    margin: 0 17px 18px;
+  }
+  .shrinkage-filters .button {
+    flex: 1;
+  }
+}
