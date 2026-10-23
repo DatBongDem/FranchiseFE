@@ -136,3 +136,10 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Lọc ngày gửi đơn theo UTC+7, phân trang server 6/12/24. Không chọn ngày sẽ bao gồm đơn chưa gửi nếu API trả về; createdTime của DTO là SentTime, không phải ngày tạo đơn.
 - Xem trạng thái, mã người gửi, sản phẩm theo lô, số lượng đặt và đơn giá; tổng tiền hiển thị theo trang, không phải tổng toàn cửa hàng. Tìm mã/tên sản phẩm trong trang hiện tại, hỗ trợ không dấu.
 - API mô phỏng được kiểm thử; chưa xác nhận dữ liệu lịch sử thực hoặc dữ liệu chuyển từ C# có quy ước múi giờ khác. Không thay đổi backend/FranchiseStore.
+
+## Tạo công thức
+
+- ADMIN/KITCHENSTAFF chọn Tạo công thức, chọn sản phẩm chưa có công thức, nhập hướng dẫn và ít nhất một nguyên liệu. Định lượng dương tối đa hai chữ số thập phân, không trùng nguyên liệu.
+- Kiểm tra lại danh sách trước `POST /recipe`; đọc lại danh sách và chi tiết sau khi tạo để xác minh vì phản hồi POST không chứa recipeID mới.
+- Chống bấm lặp, không tự gửi lại khi lỗi mạng/server. Nếu tạo dở, đóng form, tải lại và dùng cập nhật công thức để kiểm tra/bổ sung.
+- Kiểm thử bằng API mô phỏng; chưa kiểm tra database thực. Không chỉnh sửa hoặc push FranchiseStore.
