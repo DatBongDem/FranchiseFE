@@ -129,3 +129,10 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Đọc lại chi tiết trước khi gửi và kiểm tra trạng thái Completed sau khi gửi; chống bấm lặp, không tự gửi lại nếu mất kết nối. Nếu chưa xác nhận kết quả, đóng và tải lại danh sách.
 - Phạm vi cửa hàng được kiểm tra ở FE; backend hiện kiểm tra role và trạng thái, chưa kiểm tra quyền sở hữu cửa hàng tại endpoint complete. Chức năng này không thay đổi backend.
 - Kiểm thử API mô phỏng, chưa xác nhận luồng nhận hàng với database thực.
+
+## Lịch sử đơn hàng theo cửa hàng
+
+- MANAGER mở `/store-orders`, gọi `GET /order/order-history/{storeId}` với cửa hàng được phân công. Quyền MANAGER theo kiểm tra thực tế trong service backend.
+- Lọc ngày gửi đơn theo UTC+7, phân trang server 6/12/24. Không chọn ngày sẽ bao gồm đơn chưa gửi nếu API trả về; createdTime của DTO là SentTime, không phải ngày tạo đơn.
+- Xem trạng thái, mã người gửi, sản phẩm theo lô, số lượng đặt và đơn giá; tổng tiền hiển thị theo trang, không phải tổng toàn cửa hàng. Tìm mã/tên sản phẩm trong trang hiện tại, hỗ trợ không dấu.
+- API mô phỏng được kiểm thử; chưa xác nhận dữ liệu lịch sử thực hoặc dữ liệu chuyển từ C# có quy ước múi giờ khác. Không thay đổi backend/FranchiseStore.

@@ -67,6 +67,12 @@ export const navigation = [
     roles: ["MANAGER"],
   },
   {
+    path: "/store-orders",
+    label: "Lịch sử đơn hàng",
+    icon: Package,
+    roles: ["MANAGER"],
+  },
+  {
     path: "/shrinkage",
     label: "Hao hụt cửa hàng",
     icon: PackageX,
