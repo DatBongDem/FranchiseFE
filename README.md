@@ -197,3 +197,8 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - ADMIN mở chi tiết sản phẩm, chọn Xóa sản phẩm và xác nhận. FE đọc lại thông tin trước DELETE /product/:id, kiểm tra phản hồi không còn sản phẩm rồi tải lại danh sách.
 - Backend xóa mềm; không xóa lô hàng/công thức. Lỗi chưa xác định kết quả sẽ khóa gửi lại cho đến khi đóng và kiểm tra danh sách.
 - Quyền ADMIN được chặn tại FE; API backend hiện chưa có middleware phân quyền cho route này. Kiểm thử dùng API giả lập, chưa xác nhận với database thật.
+
+### Tải ảnh sản phẩm
+- ADMIN chọn Tải ảnh sản phẩm từ chi tiết, xem trước JPG/PNG/WebP/GIF tối đa 10 MB rồi lưu. PATCH /product/:id/image gửi multipart với trường file và bearer token, sau đó đọc lại để xác nhận.
+- Hiển thị cả URL Cloudinary và data URL ảnh từ fallback backend. Ngăn gửi lặp khi chưa rõ kết quả; đóng hộp thoại để kiểm tra lại. Quyền ADMIN tại FE không thay thế phân quyền backend (route hiện chưa có middleware quyền).
+- Kiểm thử API giả lập; chưa kiểm thử upload với database/Cloudinary thật.

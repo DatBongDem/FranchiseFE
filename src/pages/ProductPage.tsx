@@ -5,6 +5,7 @@ import { useResource } from "../hooks/useResource";
 import { productService } from "../services/productService";
 import { useAuth } from "../contexts/AuthContext";
 import ProductCard from "../components/ProductCard";
+import ProductImageModal from "../components/ProductImageModal";
 import EditProductModal from "../components/EditProductModal";
 import DeleteProductModal from "../components/DeleteProductModal";
 import ProductBatchesModal from "../components/ProductBatchesModal";
@@ -27,6 +28,7 @@ export default function ProductPage() {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(6);
   const [selected, setSelected] = useState<Product>();
+  const [imageId, setImageId] = useState<string>();
   const [editingId, setEditingId] = useState<string>();
   const [deletingId, setDeletingId] = useState<string>();
   const [batchProduct, setBatchProduct] = useState<Product>();
@@ -243,6 +245,18 @@ export default function ProductPage() {
           )}
           {user?.role === "ADMIN" && (
             <button
+              className="button secondary"
+              onClick={() => {
+                setImageId(selected.productId);
+                setSelected(undefined);
+                setNotice("");
+              }}
+            >
+              Tải ảnh sản phẩm
+            </button>
+          )}
+          {user?.role === "ADMIN" && (
+            <button
               className="button cancel-order-button"
               onClick={() => {
                 setDeletingId(selected.productId);
@@ -299,6 +313,22 @@ export default function ProductPage() {
           onDeleted={() => {
             setDeletingId(undefined);
             setNotice("Đã xóa sản phẩm khỏi danh mục.");
+            void products.reload();
+          }}
+        />
+      )}
+      {imageId && user && (
+        <ProductImageModal
+          key={imageId}
+          id={imageId}
+          role={user.role}
+          onClose={() => {
+            setImageId(undefined);
+            void products.reload();
+          }}
+          onSaved={() => {
+            setImageId(undefined);
+            setNotice("Đã cập nhật ảnh sản phẩm.");
             void products.reload();
           }}
         />
