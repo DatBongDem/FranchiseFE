@@ -17,9 +17,14 @@ import RevenuePage from "../pages/RevenuePage";
 import ShrinkagePage from "../pages/ShrinkagePage";
 import StoreBillHistoryPage from "../pages/StoreBillHistoryPage";
 import RecipesPage from "../pages/RecipesPage";
+import QuantitativePage from "../pages/QuantitativePage";
+import ExpiredInventoryPage from "../pages/ExpiredInventoryPage";
 import StoreInventoryPage from "../pages/StoreInventoryPage";
 import IngredientHistoryPage from "../pages/IngredientHistoryPage";
 import StoreOrderHistoryPage from "../pages/StoreOrderHistoryPage";
+import StoresPage from "../pages/StoresPage";
+import CategoriesPage from "../pages/CategoriesPage";
+import ProfilePage from "../pages/ProfilePage";
 function Layout() {
   const { user, loading } = useAuth();
   const [open, setOpen] = useState(false);
@@ -60,6 +65,8 @@ export default function AppRoutes() {
         <Route path="/shrinkage" element={<ShrinkagePage />} />
         <Route path="/store-bills" element={<StoreBillHistoryPage />} />
         <Route path="/recipes" element={<RecipesPage />} />
+        <Route path="/quantitative" element={<QuantitativePage />} />
+        <Route path="/expired-inventory" element={<ExpiredInventoryPage />} />
         <Route path="/store-inventory" element={<StoreInventoryPage />} />
         <Route path="/ingredient-history" element={<IngredientHistoryPage />} />
         <Route path="/store-orders" element={<StoreOrderHistoryPage />} />
@@ -67,6 +74,9 @@ export default function AppRoutes() {
         <Route path="/delivery" element={<OrdersPage />} />
         <Route path="/ingredients" element={<IngredientsPage />} />
         <Route path="/users" element={<UsersPage />} />
+        <Route path="/stores" element={<StoresPage />} />
+        <Route path="/categories" element={<CategoriesPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

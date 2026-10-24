@@ -8,6 +8,8 @@ import {
   Leaf,
   Package,
   ShoppingBag,
+  Store,
+  Tag,
   Truck,
   Users,
 } from "lucide-react";
@@ -290,6 +292,22 @@ export default function DashboardPage() {
                         icon: Users,
                         title: "Đội ngũ của bạn",
                         desc: "Tài khoản và vai trò",
+                      },
+                    ]
+                  : []),
+                ...(role === "ADMIN"
+                  ? [
+                      {
+                        to: "/stores",
+                        icon: Store,
+                        title: "Mạng lưới cửa hàng",
+                        desc: "Quản lý chi nhánh hệ thống",
+                      },
+                      {
+                        to: "/categories",
+                        icon: Tag,
+                        title: "Danh mục sản phẩm",
+                        desc: "Phân loại & nhóm thực đơn",
                       },
                     ]
                   : []),

@@ -7,4 +7,12 @@ export const authService = {
       body: JSON.stringify({ gmail, password }),
     }),
   me: () => api<User>("/users/me"),
+  uploadAvatar: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api<{ avatar: string }>("/users/avatar", {
+      method: "PATCH",
+      body: formData,
+    });
+  },
 };

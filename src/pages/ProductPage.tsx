@@ -5,6 +5,10 @@ import { useResource } from "../hooks/useResource";
 import { productService } from "../services/productService";
 import { useAuth } from "../contexts/AuthContext";
 import ProductCard from "../components/ProductCard";
+import ProductImageModal from "../components/ProductImageModal";
+import EditProductModal from "../components/EditProductModal";
+import DeleteProductModal from "../components/DeleteProductModal";
+import ProductBatchesModal from "../components/ProductBatchesModal";
 import {
   Feedback,
   Modal,
@@ -24,6 +28,10 @@ export default function ProductPage() {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(6);
   const [selected, setSelected] = useState<Product>();
+  const [imageId, setImageId] = useState<string>();
+  const [editingId, setEditingId] = useState<string>();
+  const [deletingId, setDeletingId] = useState<string>();
+  const [batchProduct, setBatchProduct] = useState<Product>();
   const [create, setCreate] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -223,7 +231,107 @@ export default function ProductPage() {
             <dt>Hạn sử dụng</dt>
             <dd>{selected.numberOfDaysToExpire} ngày</dd>
           </dl>
+          {user?.role === "ADMIN" && (
+            <button
+              className="button secondary"
+              onClick={() => {
+                setEditingId(selected.productId);
+                setSelected(undefined);
+                setNotice("");
+              }}
+            >
+              Sửa sản phẩm
+            </button>
+          )}
+          {user?.role === "ADMIN" && (
+            <button
+              className="button secondary"
+              onClick={() => {
+                setImageId(selected.productId);
+                setSelected(undefined);
+                setNotice("");
+              }}
+            >
+              Tải ảnh sản phẩm
+            </button>
+          )}
+          {user?.role === "ADMIN" && (
+            <button
+              className="button cancel-order-button"
+              onClick={() => {
+                setDeletingId(selected.productId);
+                setSelected(undefined);
+                setNotice("");
+              }}
+            >
+              Xóa sản phẩm
+            </button>
+          )}
+          {user?.role === "ADMIN" && (
+            <button
+              className="button primary"
+              onClick={() => {
+                setBatchProduct(selected);
+                setSelected(undefined);
+              }}
+            >
+              Xem các lô toàn hệ thống
+            </button>
+          )}
         </Modal>
+      )}
+      {batchProduct && user && (
+        <ProductBatchesModal
+          product={batchProduct}
+          role={user.role}
+          onClose={() => setBatchProduct(undefined)}
+        />
+      )}
+      {editingId && user && (
+        <EditProductModal
+          id={editingId}
+          role={user.role}
+          onClose={() => {
+            setEditingId(undefined);
+            void products.reload();
+          }}
+          onSaved={() => {
+            setEditingId(undefined);
+            setNotice("Đã cập nhật sản phẩm thành công.");
+            void products.reload();
+          }}
+        />
+      )}
+      {deletingId && user && (
+        <DeleteProductModal
+          id={deletingId}
+          role={user.role}
+          onClose={() => {
+            setDeletingId(undefined);
+            void products.reload();
+          }}
+          onDeleted={() => {
+            setDeletingId(undefined);
+            setNotice("Đã xóa sản phẩm khỏi danh mục.");
+            void products.reload();
+          }}
+        />
+      )}
+      {imageId && user && (
+        <ProductImageModal
+          key={imageId}
+          id={imageId}
+          role={user.role}
+          onClose={() => {
+            setImageId(undefined);
+            void products.reload();
+          }}
+          onSaved={() => {
+            setImageId(undefined);
+            setNotice("Đã cập nhật ảnh sản phẩm.");
+            void products.reload();
+          }}
+        />
       )}
       {create && (
         <Modal

@@ -164,3 +164,41 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Tên/mã sản phẩm, lượng còn lại, đơn vị; tìm không dấu, lọc còn hàng/không còn lượng khả dụng, đơn vị, sắp xếp, phân trang cục bộ 6/12/24 và tải lại.
 - API chỉ tính lô từ đơn Completed, chưa hết hạn hoặc không có hạn dùng. Không bổ sung giả các sản phẩm không được API trả về, không cộng lẫn đơn vị, không tính giá trị tồn kho. Chưa có ngày hết hạn từng lô để lọc ngày.
 - Giới hạn role/cửa hàng được thực hiện ở FE; endpoint backend hiện chỉ yêu cầu đăng nhập. Không thay đổi backend/FranchiseStore. Kiểm thử API mô phỏng, chưa kiểm tra database thực.
+
+## Chi tiết lô sản phẩm
+
+- ADMIN mở Sản phẩm → Chi tiết → Xem các lô toàn hệ thống. Gọi `GET /productbatches/products/{productId}/batches`.
+- API trả lô thuộc đơn Completed trên toàn hệ thống, không có StoreId nên không dùng làm chi tiết tồn kho riêng của cửa hàng. Giới hạn ADMIN là quy tắc FE; backend hiện chỉ yêu cầu đăng nhập.
+- Xem mã lô, số lượng đặt/còn lại, giá, đơn vị, ngày sản xuất/hết hạn và trạng thái. Tìm mã lô, lọc ngày hết hạn, lọc còn số lượng, phân trang. Ngày giữ phần ngày API, không tự dịch múi giờ; còn số lượng không có nghĩa còn hạn.
+- Kiểm thử API mô phỏng; chưa kiểm tra database thực. Không chỉnh sửa backend hoặc FranchiseStore.
+
+## Báo cáo hàng hết hạn theo ngày
+
+- ADMIN mở `/expired-inventory`, chọn ngày và gọi `GET /productbatches/inventory/expired-by-date/YYYY-MM-DD` (giữ nguyên ngày, không chuyển múi giờ).
+- Báo cáo toàn hệ thống: các lô thuộc đơn Completed, ngày Expiry đúng ngày chọn, RemainingQuantity > 0. Lượng còn lại là hiện tại, không phải tồn tại thời điểm quá khứ hoặc lượng đã tiêu hủy. Ngày hôm nay/tương lai có thể gồm hàng chưa hết hạn tại thời điểm xem.
+- Có tìm tên/mã, lọc đơn vị, sắp xếp số lượng, phân trang cục bộ và tải lại. Không cộng lẫn đơn vị hoặc suy ra thiệt hại khi API không trả giá.
+- Giới hạn ADMIN ở FE; backend hiện yêu cầu đăng nhập. Không thay đổi backend/FranchiseStore. Kiểm thử API mô phỏng, chưa kiểm tra database thực.
+
+## Định mức sản phẩm cửa hàng
+
+- MANAGER/STORESTAFF mở `/quantitative`: tìm tên/mã, sắp xếp và phân trang. `GET /quantitative` lấy cửa hàng từ token; FE kiểm tra StoreId từng dòng khớp tài khoản.
+- `PUT /quantitative/{productId}` gửi `{ quantity }`, chỉ cập nhật dòng đã tồn tại, số nguyên 1–2147483647. Thành công trả 204; FE đọc lại để xác nhận.
+- Kiểm tra giá trị mới nhất trước khi lưu, chống bấm lặp và không tự gửi lại khi mất phản hồi. Kiểm tra trước không thay thế khóa đồng thời ở server.
+- API chưa trả đơn vị và không có tạo/xóa định mức. Quyền MANAGER/STORESTAFF là giới hạn FE; backend yêu cầu đăng nhập và dùng cửa hàng trong token. Kiểm thử mô phỏng, chưa kiểm tra database thực. Không sửa backend/FranchiseStore.
+
+## Sửa sản phẩm
+
+- ADMIN vào Sản phẩm → Chi tiết → Sửa sản phẩm. Tải mới qua `GET /product/{id}`, lưu qua `PUT /product/{id}`.
+- Sửa tên, giá vốn, giá bán, đơn vị, số ngày hết hạn. Danh mục và ảnh không được endpoint update hỗ trợ nên giữ nguyên. Kiểm tra số không âm, giá tối đa hai số thập phân, hạn dùng nguyên và tên/đơn vị bắt buộc.
+- Kiểm tra dữ liệu thay đổi trước lưu, đọc lại sau lưu, chống bấm lặp; lỗi không tự gửi lại. Giới hạn ADMIN ở FE; backend hiện chưa phân quyền route sản phẩm.
+- Kiểm thử mô phỏng, chưa kiểm tra database thực. Không sửa backend/FranchiseStore.
+
+### Xóa sản phẩm
+- ADMIN mở chi tiết sản phẩm, chọn Xóa sản phẩm và xác nhận. FE đọc lại thông tin trước DELETE /product/:id, kiểm tra phản hồi không còn sản phẩm rồi tải lại danh sách.
+- Backend xóa mềm; không xóa lô hàng/công thức. Lỗi chưa xác định kết quả sẽ khóa gửi lại cho đến khi đóng và kiểm tra danh sách.
+- Quyền ADMIN được chặn tại FE; API backend hiện chưa có middleware phân quyền cho route này. Kiểm thử dùng API giả lập, chưa xác nhận với database thật.
+
+### Tải ảnh sản phẩm
+- ADMIN chọn Tải ảnh sản phẩm từ chi tiết, xem trước JPG/PNG/WebP/GIF tối đa 10 MB rồi lưu. PATCH /product/:id/image gửi multipart với trường file và bearer token, sau đó đọc lại để xác nhận.
+- Hiển thị cả URL Cloudinary và data URL ảnh từ fallback backend. Ngăn gửi lặp khi chưa rõ kết quả; đóng hộp thoại để kiểm tra lại. Quyền ADMIN tại FE không thay thế phân quyền backend (route hiện chưa có middleware quyền).
+- Kiểm thử API giả lập; chưa kiểm thử upload với database/Cloudinary thật.
