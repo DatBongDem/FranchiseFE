@@ -1,6 +1,7 @@
 import { ArrowUpRight, Clock3, Salad } from "lucide-react";
 import type { Product } from "../types/product";
 import { money } from "./ui";
+import { productImageSource } from "../services/productImageService";
 export default function ProductCard({
   product,
   index,
@@ -13,8 +14,9 @@ export default function ProductCard({
   return (
     <article className="product-card">
       <div className={`product-image tone-${index % 3}`}>
-        {product.image && /^https?:\/\//.test(product.image) ? (
+        {productImageSource(product.image) ? (
           <img
+            key={product.image}
             src={product.image}
             alt={product.productName}
             loading="lazy"
