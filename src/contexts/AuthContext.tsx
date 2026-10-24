@@ -12,6 +12,8 @@ interface Auth {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
+  updateUser: (user: User) => void;
 }
 const Context = createContext<Auth | null>(null);
 function validate(user: User) {
@@ -58,8 +60,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw error;
     }
   }
+  async function refreshUser() {
+    try {
+      const me = await authService.me();
+      setUser(validate(me));
+    } catch {
+      // ignore
+    }
+  }
+
+  function updateUser(updated: User) {
+    setUser(validate(updated));
+  }
+
   return (
-    <Context.Provider value={{ user, loading, login, logout }}>
+    <Context.Provider value={{ user, loading, login, logout, refreshUser, updateUser }}>
       {children}
     </Context.Provider>
   );

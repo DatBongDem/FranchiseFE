@@ -12,13 +12,28 @@ import {
   History,
   PackageX,
   ShoppingBag,
+  Store,
+  Tag,
   Truck,
   Users,
+  UserCheck,
   X,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { roleLabels, type Role } from "../types/user";
 export const navigation = [
+  {
+    path: "/profile",
+    label: "Hồ sơ cá nhân",
+    icon: UserCheck,
+    roles: [
+      "ADMIN",
+      "MANAGER",
+      "STORESTAFF",
+      "KITCHENSTAFF",
+      "SUPPLYCOORDINATOR",
+    ],
+  },
   {
     path: "/quantitative",
     label: "Định mức sản phẩm",
@@ -29,6 +44,18 @@ export const navigation = [
     path: "/expired-inventory",
     label: "Hàng hết hạn theo ngày",
     icon: PackageX,
+    roles: ["ADMIN"],
+  },
+  {
+    path: "/stores",
+    label: "Cửa hàng",
+    icon: Store,
+    roles: ["ADMIN"],
+  },
+  {
+    path: "/categories",
+    label: "Danh mục sản phẩm",
+    icon: Tag,
     roles: ["ADMIN"],
   },
   {
@@ -130,6 +157,7 @@ export const navigation = [
 ];
 export function allowed(path: string, role: Role) {
   if (path === "/orders/new") return role === "STORESTAFF";
+  if (path === "/profile") return true;
   return (
     navigation.find((item) => item.path === path)?.roles.includes(role) ?? false
   );

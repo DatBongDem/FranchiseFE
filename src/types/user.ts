@@ -15,6 +15,9 @@ export interface User {
   avatar?: string;
   status?: string;
   phoneNumber?: string;
+  gender?: string;
+  dateOfBirth?: string;
+  address?: string;
 }
 export const roleLabels: Record<Role, string> = {
   ADMIN: "Quản trị hệ thống",

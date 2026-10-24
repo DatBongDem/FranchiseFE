@@ -22,6 +22,9 @@ import ExpiredInventoryPage from "../pages/ExpiredInventoryPage";
 import StoreInventoryPage from "../pages/StoreInventoryPage";
 import IngredientHistoryPage from "../pages/IngredientHistoryPage";
 import StoreOrderHistoryPage from "../pages/StoreOrderHistoryPage";
+import StoresPage from "../pages/StoresPage";
+import CategoriesPage from "../pages/CategoriesPage";
+import ProfilePage from "../pages/ProfilePage";
 function Layout() {
   const { user, loading } = useAuth();
   const [open, setOpen] = useState(false);
@@ -71,6 +74,9 @@ export default function AppRoutes() {
         <Route path="/delivery" element={<OrdersPage />} />
         <Route path="/ingredients" element={<IngredientsPage />} />
         <Route path="/users" element={<UsersPage />} />
+        <Route path="/stores" element={<StoresPage />} />
+        <Route path="/categories" element={<CategoriesPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
