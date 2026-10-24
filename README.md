@@ -178,3 +178,10 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Báo cáo toàn hệ thống: các lô thuộc đơn Completed, ngày Expiry đúng ngày chọn, RemainingQuantity > 0. Lượng còn lại là hiện tại, không phải tồn tại thời điểm quá khứ hoặc lượng đã tiêu hủy. Ngày hôm nay/tương lai có thể gồm hàng chưa hết hạn tại thời điểm xem.
 - Có tìm tên/mã, lọc đơn vị, sắp xếp số lượng, phân trang cục bộ và tải lại. Không cộng lẫn đơn vị hoặc suy ra thiệt hại khi API không trả giá.
 - Giới hạn ADMIN ở FE; backend hiện yêu cầu đăng nhập. Không thay đổi backend/FranchiseStore. Kiểm thử API mô phỏng, chưa kiểm tra database thực.
+
+## Định mức sản phẩm cửa hàng
+
+- MANAGER/STORESTAFF mở `/quantitative`: tìm tên/mã, sắp xếp và phân trang. `GET /quantitative` lấy cửa hàng từ token; FE kiểm tra StoreId từng dòng khớp tài khoản.
+- `PUT /quantitative/{productId}` gửi `{ quantity }`, chỉ cập nhật dòng đã tồn tại, số nguyên 1–2147483647. Thành công trả 204; FE đọc lại để xác nhận.
+- Kiểm tra giá trị mới nhất trước khi lưu, chống bấm lặp và không tự gửi lại khi mất phản hồi. Kiểm tra trước không thay thế khóa đồng thời ở server.
+- API chưa trả đơn vị và không có tạo/xóa định mức. Quyền MANAGER/STORESTAFF là giới hạn FE; backend yêu cầu đăng nhập và dùng cửa hàng trong token. Kiểm thử mô phỏng, chưa kiểm tra database thực. Không sửa backend/FranchiseStore.

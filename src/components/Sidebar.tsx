@@ -20,6 +20,12 @@ import { useAuth } from "../contexts/AuthContext";
 import { roleLabels, type Role } from "../types/user";
 export const navigation = [
   {
+    path: "/quantitative",
+    label: "Định mức sản phẩm",
+    icon: Package,
+    roles: ["MANAGER", "STORESTAFF"],
+  },
+  {
     path: "/expired-inventory",
     label: "Hàng hết hạn theo ngày",
     icon: PackageX,
