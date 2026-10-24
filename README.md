@@ -171,3 +171,10 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - API trả lô thuộc đơn Completed trên toàn hệ thống, không có StoreId nên không dùng làm chi tiết tồn kho riêng của cửa hàng. Giới hạn ADMIN là quy tắc FE; backend hiện chỉ yêu cầu đăng nhập.
 - Xem mã lô, số lượng đặt/còn lại, giá, đơn vị, ngày sản xuất/hết hạn và trạng thái. Tìm mã lô, lọc ngày hết hạn, lọc còn số lượng, phân trang. Ngày giữ phần ngày API, không tự dịch múi giờ; còn số lượng không có nghĩa còn hạn.
 - Kiểm thử API mô phỏng; chưa kiểm tra database thực. Không chỉnh sửa backend hoặc FranchiseStore.
+
+## Báo cáo hàng hết hạn theo ngày
+
+- ADMIN mở `/expired-inventory`, chọn ngày và gọi `GET /productbatches/inventory/expired-by-date/YYYY-MM-DD` (giữ nguyên ngày, không chuyển múi giờ).
+- Báo cáo toàn hệ thống: các lô thuộc đơn Completed, ngày Expiry đúng ngày chọn, RemainingQuantity > 0. Lượng còn lại là hiện tại, không phải tồn tại thời điểm quá khứ hoặc lượng đã tiêu hủy. Ngày hôm nay/tương lai có thể gồm hàng chưa hết hạn tại thời điểm xem.
+- Có tìm tên/mã, lọc đơn vị, sắp xếp số lượng, phân trang cục bộ và tải lại. Không cộng lẫn đơn vị hoặc suy ra thiệt hại khi API không trả giá.
+- Giới hạn ADMIN ở FE; backend hiện yêu cầu đăng nhập. Không thay đổi backend/FranchiseStore. Kiểm thử API mô phỏng, chưa kiểm tra database thực.
