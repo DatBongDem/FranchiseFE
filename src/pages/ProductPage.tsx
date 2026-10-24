@@ -5,6 +5,7 @@ import { useResource } from "../hooks/useResource";
 import { productService } from "../services/productService";
 import { useAuth } from "../contexts/AuthContext";
 import ProductCard from "../components/ProductCard";
+import EditProductModal from "../components/EditProductModal";
 import ProductBatchesModal from "../components/ProductBatchesModal";
 import {
   Feedback,
@@ -25,6 +26,7 @@ export default function ProductPage() {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(6);
   const [selected, setSelected] = useState<Product>();
+  const [editingId, setEditingId] = useState<string>();
   const [batchProduct, setBatchProduct] = useState<Product>();
   const [create, setCreate] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -227,6 +229,18 @@ export default function ProductPage() {
           </dl>
           {user?.role === "ADMIN" && (
             <button
+              className="button secondary"
+              onClick={() => {
+                setEditingId(selected.productId);
+                setSelected(undefined);
+                setNotice("");
+              }}
+            >
+              Sửa sản phẩm
+            </button>
+          )}
+          {user?.role === "ADMIN" && (
+            <button
               className="button primary"
               onClick={() => {
                 setBatchProduct(selected);
@@ -243,6 +257,21 @@ export default function ProductPage() {
           product={batchProduct}
           role={user.role}
           onClose={() => setBatchProduct(undefined)}
+        />
+      )}
+      {editingId && user && (
+        <EditProductModal
+          id={editingId}
+          role={user.role}
+          onClose={() => {
+            setEditingId(undefined);
+            void products.reload();
+          }}
+          onSaved={() => {
+            setEditingId(undefined);
+            setNotice("Đã cập nhật sản phẩm thành công.");
+            void products.reload();
+          }}
         />
       )}
       {create && (
