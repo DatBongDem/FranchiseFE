@@ -192,3 +192,8 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Sửa tên, giá vốn, giá bán, đơn vị, số ngày hết hạn. Danh mục và ảnh không được endpoint update hỗ trợ nên giữ nguyên. Kiểm tra số không âm, giá tối đa hai số thập phân, hạn dùng nguyên và tên/đơn vị bắt buộc.
 - Kiểm tra dữ liệu thay đổi trước lưu, đọc lại sau lưu, chống bấm lặp; lỗi không tự gửi lại. Giới hạn ADMIN ở FE; backend hiện chưa phân quyền route sản phẩm.
 - Kiểm thử mô phỏng, chưa kiểm tra database thực. Không sửa backend/FranchiseStore.
+
+### Xóa sản phẩm
+- ADMIN mở chi tiết sản phẩm, chọn Xóa sản phẩm và xác nhận. FE đọc lại thông tin trước DELETE /product/:id, kiểm tra phản hồi không còn sản phẩm rồi tải lại danh sách.
+- Backend xóa mềm; không xóa lô hàng/công thức. Lỗi chưa xác định kết quả sẽ khóa gửi lại cho đến khi đóng và kiểm tra danh sách.
+- Quyền ADMIN được chặn tại FE; API backend hiện chưa có middleware phân quyền cho route này. Kiểm thử dùng API giả lập, chưa xác nhận với database thật.

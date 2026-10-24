@@ -6,6 +6,7 @@ import { productService } from "../services/productService";
 import { useAuth } from "../contexts/AuthContext";
 import ProductCard from "../components/ProductCard";
 import EditProductModal from "../components/EditProductModal";
+import DeleteProductModal from "../components/DeleteProductModal";
 import ProductBatchesModal from "../components/ProductBatchesModal";
 import {
   Feedback,
@@ -27,6 +28,7 @@ export default function ProductPage() {
   const [size, setSize] = useState(6);
   const [selected, setSelected] = useState<Product>();
   const [editingId, setEditingId] = useState<string>();
+  const [deletingId, setDeletingId] = useState<string>();
   const [batchProduct, setBatchProduct] = useState<Product>();
   const [create, setCreate] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -241,6 +243,18 @@ export default function ProductPage() {
           )}
           {user?.role === "ADMIN" && (
             <button
+              className="button cancel-order-button"
+              onClick={() => {
+                setDeletingId(selected.productId);
+                setSelected(undefined);
+                setNotice("");
+              }}
+            >
+              Xóa sản phẩm
+            </button>
+          )}
+          {user?.role === "ADMIN" && (
+            <button
               className="button primary"
               onClick={() => {
                 setBatchProduct(selected);
@@ -270,6 +284,21 @@ export default function ProductPage() {
           onSaved={() => {
             setEditingId(undefined);
             setNotice("Đã cập nhật sản phẩm thành công.");
+            void products.reload();
+          }}
+        />
+      )}
+      {deletingId && user && (
+        <DeleteProductModal
+          id={deletingId}
+          role={user.role}
+          onClose={() => {
+            setDeletingId(undefined);
+            void products.reload();
+          }}
+          onDeleted={() => {
+            setDeletingId(undefined);
+            setNotice("Đã xóa sản phẩm khỏi danh mục.");
             void products.reload();
           }}
         />
