@@ -164,3 +164,10 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - Tên/mã sản phẩm, lượng còn lại, đơn vị; tìm không dấu, lọc còn hàng/không còn lượng khả dụng, đơn vị, sắp xếp, phân trang cục bộ 6/12/24 và tải lại.
 - API chỉ tính lô từ đơn Completed, chưa hết hạn hoặc không có hạn dùng. Không bổ sung giả các sản phẩm không được API trả về, không cộng lẫn đơn vị, không tính giá trị tồn kho. Chưa có ngày hết hạn từng lô để lọc ngày.
 - Giới hạn role/cửa hàng được thực hiện ở FE; endpoint backend hiện chỉ yêu cầu đăng nhập. Không thay đổi backend/FranchiseStore. Kiểm thử API mô phỏng, chưa kiểm tra database thực.
+
+## Chi tiết lô sản phẩm
+
+- ADMIN mở Sản phẩm → Chi tiết → Xem các lô toàn hệ thống. Gọi `GET /productbatches/products/{productId}/batches`.
+- API trả lô thuộc đơn Completed trên toàn hệ thống, không có StoreId nên không dùng làm chi tiết tồn kho riêng của cửa hàng. Giới hạn ADMIN là quy tắc FE; backend hiện chỉ yêu cầu đăng nhập.
+- Xem mã lô, số lượng đặt/còn lại, giá, đơn vị, ngày sản xuất/hết hạn và trạng thái. Tìm mã lô, lọc ngày hết hạn, lọc còn số lượng, phân trang. Ngày giữ phần ngày API, không tự dịch múi giờ; còn số lượng không có nghĩa còn hạn.
+- Kiểm thử API mô phỏng; chưa kiểm tra database thực. Không chỉnh sửa backend hoặc FranchiseStore.

@@ -5,6 +5,7 @@ import { useResource } from "../hooks/useResource";
 import { productService } from "../services/productService";
 import { useAuth } from "../contexts/AuthContext";
 import ProductCard from "../components/ProductCard";
+import ProductBatchesModal from "../components/ProductBatchesModal";
 import {
   Feedback,
   Modal,
@@ -24,6 +25,7 @@ export default function ProductPage() {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(6);
   const [selected, setSelected] = useState<Product>();
+  const [batchProduct, setBatchProduct] = useState<Product>();
   const [create, setCreate] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -223,7 +225,25 @@ export default function ProductPage() {
             <dt>Hạn sử dụng</dt>
             <dd>{selected.numberOfDaysToExpire} ngày</dd>
           </dl>
+          {user?.role === "ADMIN" && (
+            <button
+              className="button primary"
+              onClick={() => {
+                setBatchProduct(selected);
+                setSelected(undefined);
+              }}
+            >
+              Xem các lô toàn hệ thống
+            </button>
+          )}
         </Modal>
+      )}
+      {batchProduct && user && (
+        <ProductBatchesModal
+          product={batchProduct}
+          role={user.role}
+          onClose={() => setBatchProduct(undefined)}
+        />
       )}
       {create && (
         <Modal
