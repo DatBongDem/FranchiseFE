@@ -185,3 +185,10 @@ Google Font có fallback về font hệ thống nếu không truy cập mạng. 
 - `PUT /quantitative/{productId}` gửi `{ quantity }`, chỉ cập nhật dòng đã tồn tại, số nguyên 1–2147483647. Thành công trả 204; FE đọc lại để xác nhận.
 - Kiểm tra giá trị mới nhất trước khi lưu, chống bấm lặp và không tự gửi lại khi mất phản hồi. Kiểm tra trước không thay thế khóa đồng thời ở server.
 - API chưa trả đơn vị và không có tạo/xóa định mức. Quyền MANAGER/STORESTAFF là giới hạn FE; backend yêu cầu đăng nhập và dùng cửa hàng trong token. Kiểm thử mô phỏng, chưa kiểm tra database thực. Không sửa backend/FranchiseStore.
+
+## Sửa sản phẩm
+
+- ADMIN vào Sản phẩm → Chi tiết → Sửa sản phẩm. Tải mới qua `GET /product/{id}`, lưu qua `PUT /product/{id}`.
+- Sửa tên, giá vốn, giá bán, đơn vị, số ngày hết hạn. Danh mục và ảnh không được endpoint update hỗ trợ nên giữ nguyên. Kiểm tra số không âm, giá tối đa hai số thập phân, hạn dùng nguyên và tên/đơn vị bắt buộc.
+- Kiểm tra dữ liệu thay đổi trước lưu, đọc lại sau lưu, chống bấm lặp; lỗi không tự gửi lại. Giới hạn ADMIN ở FE; backend hiện chưa phân quyền route sản phẩm.
+- Kiểm thử mô phỏng, chưa kiểm tra database thực. Không sửa backend/FranchiseStore.
