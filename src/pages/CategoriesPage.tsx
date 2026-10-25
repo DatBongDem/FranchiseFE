@@ -35,7 +35,7 @@ export default function CategoriesPage() {
   const [deleteError, setDeleteError] = useState("");
 
   const rows = (resource.data || []).filter((c) =>
-    c.categoryName.toLocaleLowerCase("vi").includes(search.toLocaleLowerCase("vi"))
+    (c.categoryName ?? "").toLocaleLowerCase("vi").includes(search.toLocaleLowerCase("vi"))
   );
   const current = Math.min(page, Math.max(1, Math.ceil(rows.length / size)));
 
